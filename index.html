@@ -2,36 +2,51 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WatchGo - الصفحة الرئيسية</title>
     <style>
-        body { background: #050505; color: #fff; margin: 0; font-family: sans-serif; }
+        body { background: #0a0a0a; color: #fff; font-family: sans-serif; margin: 0; }
         
-        /* اسم الموقع الضخم */
-        .header { text-align: center; padding: 40px 20px; font-size: 45px; font-weight: 800; color: #fff; text-shadow: 0 0 15px #bf00ff; }
+        /* القائمة العلوية */
+        .header { background: #111; padding: 15px; text-align: center; border-bottom: 2px solid #800080; }
+        .logo { font-size: 28px; font-weight: bold; color: #fff; text-shadow: 0 0 10px #800080; }
         
-        /* شبكة البوسترات (5 صفوف) */
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 15px; }
+        /* شبكة الأفلام */
+        .movies-container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 15px; }
         
-        /* كارت الفيلم (حجم توب سيما) */
-        .card { background: #1a1a1a; border-radius: 8px; border: 1px solid #333; overflow: hidden; transition: 0.3s; }
-        .card img { width: 100%; height: 220px; object-fit: cover; }
-        .card h3 { padding: 8px; font-size: 13px; text-align: center; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .info { padding: 0 5px 8px; font-size: 11px; color: #e11d48; text-align: center; font-weight: bold; }
+        /* شكل الكارت (بوستر + عنوان + زر) */
+        .movie-card { background: #1a1a1a; border-radius: 4px; overflow: hidden; border: 1px solid #333; }
+        .movie-card img { width: 100%; height: 220px; object-fit: cover; }
+        .movie-title { padding: 10px; font-size: 14px; text-align: center; height: 35px; }
+        .watch-btn { display: block; background: #800080; color: #fff; text-align: center; padding: 8px; text-decoration: none; font-weight: bold; }
     </style>
 </head>
 <body>
-    <div class="header">WatchGo</div>
-    <div class="grid">
-        <script>
-            for(let i=0; i<10; i++) {
-                document.write(`
-                    <div class="card">
-                        <img src="https://via.placeholder.com/200x300" alt="بوستر">
-                        <h3>اسم الفيلم الجبار</h3>
-                        <div class="info">⭐ 8.5 | جودة عالية</div>
-                    </div>
-                `);
-            }
-        </script>
-    </div>
+
+    <header class="header">
+        <div class="logo">WATCHGO</div>
+    </header>
+
+    <div class="movies-container" id="movies-grid">
+        </div>
+
+    <script>
+        // هنا سنضيف البيانات لاحقاً
+        const movies = [
+            { title: "فيلم تجريبي 1", poster: "https://via.placeholder.com/200x300" },
+            { title: "فيلم تجريبي 2", poster: "https://via.placeholder.com/200x300" }
+        ];
+
+        const grid = document.getElementById('movies-grid');
+        movies.forEach(movie => {
+            grid.innerHTML += `
+                <div class="movie-card">
+                    <img src="${movie.poster}">
+                    <div class="movie-title">${movie.title}</div>
+                    <a href="#" class="watch-btn">شاهد الآن</a>
+                </div>
+            `;
+        });
+    </script>
 </body>
 </html>
