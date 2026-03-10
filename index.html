@@ -3,18 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WatchGo - الصفحة الرئيسية</title>
+    <title>WatchGo</title>
     <style>
         body { background: #0a0a0a; color: #fff; font-family: sans-serif; margin: 0; }
         
-        /* القائمة العلوية */
-        .header { background: #111; padding: 15px; text-align: center; border-bottom: 2px solid #800080; }
-        .logo { font-size: 28px; font-weight: bold; color: #fff; text-shadow: 0 0 10px #800080; }
+        /* الهيدر والقائمة */
+        .header { background: #111; padding: 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #800080; }
+        .logo { font-size: 24px; font-weight: bold; color: #fff; }
+        .menu-btn { font-size: 25px; cursor: pointer; color: #fff; }
         
+        /* القائمة الجانبية (خفية في البداية) */
+        .side-nav { height: 100%; width: 0; position: fixed; z-index: 1; top: 0; right: 0; background-color: #111; overflow-x: hidden; transition: 0.5s; padding-top: 60px; border-right: 2px solid #800080; }
+        .side-nav a { padding: 15px 25px; text-decoration: none; font-size: 20px; color: #fff; display: block; }
+        .close-btn { position: absolute; top: 10px; right: 20px; font-size: 30px; }
+
         /* شبكة الأفلام */
         .movies-container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 15px; }
-        
-        /* شكل الكارت (بوستر + عنوان + زر) */
         .movie-card { background: #1a1a1a; border-radius: 4px; overflow: hidden; border: 1px solid #333; }
         .movie-card img { width: 100%; height: 220px; object-fit: cover; }
         .movie-title { padding: 10px; font-size: 14px; text-align: center; height: 35px; }
@@ -25,28 +29,24 @@
 
     <header class="header">
         <div class="logo">WATCHGO</div>
+        <div class="menu-btn" onclick="openNav()">☰</div>
     </header>
 
+    <div id="mySideNav" class="side-nav">
+        <a href="javascript:void(0)" class="close-btn" onclick="closeNav()">&times;</a>
+        <a href="#">الرئيسية</a>
+        <a href="#">أفلام أجنبي</a>
+        <a href="#">مسلسلات</a>
+        <a href="#">تصنيف حسب السنة</a>
+    </div>
+
     <div class="movies-container" id="movies-grid">
-        </div>
+        <div class="movie-card"><img src="https://via.placeholder.com/200x300"><div class="movie-title">فيلم تجريبي</div><a href="#" class="watch-btn">شاهد الآن</a></div>
+    </div>
 
     <script>
-        // هنا سنضيف البيانات لاحقاً
-        const movies = [
-            { title: "فيلم تجريبي 1", poster: "https://via.placeholder.com/200x300" },
-            { title: "فيلم تجريبي 2", poster: "https://via.placeholder.com/200x300" }
-        ];
-
-        const grid = document.getElementById('movies-grid');
-        movies.forEach(movie => {
-            grid.innerHTML += `
-                <div class="movie-card">
-                    <img src="${movie.poster}">
-                    <div class="movie-title">${movie.title}</div>
-                    <a href="#" class="watch-btn">شاهد الآن</a>
-                </div>
-            `;
-        });
+        function openNav() { document.getElementById("mySideNav").style.width = "250px"; }
+        function closeNav() { document.getElementById("mySideNav").style.width = "0"; }
     </script>
 </body>
 </html>
