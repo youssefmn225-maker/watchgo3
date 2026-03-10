@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WatchGo</title>
+    <title>WatchGo - شاهد أفلامك</title>
     <style>
         body { background: #0a0a0a; color: #fff; font-family: sans-serif; margin: 0; }
         
@@ -12,17 +12,17 @@
         .logo { font-size: 24px; font-weight: bold; color: #fff; }
         .menu-btn { font-size: 25px; cursor: pointer; color: #fff; }
         
-        /* القائمة الجانبية (خفية في البداية) */
-        .side-nav { height: 100%; width: 0; position: fixed; z-index: 1; top: 0; right: 0; background-color: #111; overflow-x: hidden; transition: 0.5s; padding-top: 60px; border-right: 2px solid #800080; }
+        /* القائمة الجانبية */
+        .side-nav { height: 100%; width: 0; position: fixed; z-index: 1; top: 0; right: 0; background-color: #111; overflow-x: hidden; transition: 0.3s; padding-top: 60px; border-right: 2px solid #800080; }
         .side-nav a { padding: 15px 25px; text-decoration: none; font-size: 20px; color: #fff; display: block; }
         .close-btn { position: absolute; top: 10px; right: 20px; font-size: 30px; }
 
         /* شبكة الأفلام */
         .movies-container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 15px; }
-        .movie-card { background: #1a1a1a; border-radius: 4px; overflow: hidden; border: 1px solid #333; }
-        .movie-card img { width: 100%; height: 220px; object-fit: cover; }
-        .movie-title { padding: 10px; font-size: 14px; text-align: center; height: 35px; }
-        .watch-btn { display: block; background: #800080; color: #fff; text-align: center; padding: 8px; text-decoration: none; font-weight: bold; }
+        .movie-card { background: #1a1a1a; border-radius: 6px; overflow: hidden; border: 1px solid #333; }
+        .movie-card img { width: 100%; height: 230px; object-fit: cover; display: block; }
+        .movie-title { padding: 10px; font-size: 13px; text-align: center; height: 30px; }
+        .watch-btn { display: block; background: #800080; color: #fff; text-align: center; padding: 10px; text-decoration: none; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -36,17 +36,35 @@
         <a href="javascript:void(0)" class="close-btn" onclick="closeNav()">&times;</a>
         <a href="#">الرئيسية</a>
         <a href="#">أفلام أجنبي</a>
-        <a href="#">مسلسلات</a>
-        <a href="#">تصنيف حسب السنة</a>
+        <a href="#">أفلام عربي</a>
     </div>
 
     <div class="movies-container" id="movies-grid">
-        <div class="movie-card"><img src="https://via.placeholder.com/200x300"><div class="movie-title">فيلم تجريبي</div><a href="#" class="watch-btn">شاهد الآن</a></div>
-    </div>
+        </div>
 
     <script>
         function openNav() { document.getElementById("mySideNav").style.width = "250px"; }
         function closeNav() { document.getElementById("mySideNav").style.width = "0"; }
+
+        const movies = [
+            { title: "فيلم 1", poster: "https://i.ibb.co/TqtRdpKX/zf-KS4-WL0-OZ9udp-No-SYZw91-VB3a-H-scaled-433x650.jpg" },
+            { title: "فيلم 2", poster: "https://i.ibb.co/xS9g9zf9/MV5-BNz-Zj-Nj-Rm-ODkt-MDZj-OC00-Mzcw-LWI4-N2-It-YTI5-OWY1-YTI2-ZGZl-Xk-Ey-Xk-Fqc-Gc-449x650.jpg" },
+            { title: "فيلم 3", poster: "https://i.ibb.co/vx3FTWpm/70k-Tz0-Omjj-Ze7z-Hv-IDrq2i-KW7-PJ-scaled-433x650.jpg" },
+            { title: "فيلم 4", poster: "https://i.ibb.co/nqNxs4f7/n-Op-JLL-4f-424x650.jpg" },
+            { title: "فيلم 5", poster: "https://i.ibb.co/S48J73Ys/MV5-BNWU4-Zj-M3-Mj-Qt-ZTAw-MS00-YTY4-LWJh-Ym-Et-ZTFi-MTAx-Nzc4-OGFj-Xk-Ey-Xk-Fqc-Gc-V1-scaled-433x650.jpg" },
+            { title: "فيلم 6", poster: "https://i.ibb.co/TxbY9Q73/g0j-VBv-4f-464x650.jpg" }
+        ];
+
+        const grid = document.getElementById('movies-grid');
+        movies.forEach(movie => {
+            grid.innerHTML += `
+                <div class="movie-card">
+                    <img src="${movie.poster}" alt="${movie.title}">
+                    <div class="movie-title">${movie.title}</div>
+                    <a href="#" class="watch-btn">شاهد الآن</a>
+                </div>
+            `;
+        });
     </script>
 </body>
 </html>
