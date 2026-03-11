@@ -3,45 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WatchGo - شاهد أفلامك</title>
+    <title>WatchGo - عالم السينما</title>
     <style>
         body { background: #0a0a0a; color: #fff; font-family: sans-serif; margin: 0; }
         
-        /* الهيدر والقائمة */
-        .header { background: #111; padding: 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #800080; }
-        .logo { font-size: 24px; font-weight: bold; color: #fff; display: flex; align-items: center; }
+        /* الهيدر الثابت */
+        .header { background: #111; padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #800080; position: sticky; top: 0; z-index: 100; }
+        .logo { font-size: 22px; font-weight: bold; color: #fff; display: flex; align-items: center; }
         
-        /* تنسيق اللوجو الدائري */
+        /* تنسيق اللوجو السينمائي الجديد */
         .logo img { 
-            width: 45px; 
-            height: 45px; 
+            width: 55px; 
+            height: 55px; 
             border-radius: 50%; 
             border: 2px solid #800080; 
-            object-fit: contain; 
-            background-color: #fff; 
-            margin-left: 10px; 
+            object-fit: cover; 
+            margin-left: 12px;
+            background: #000;
         }
         
-        .menu-btn { font-size: 25px; cursor: pointer; color: #fff; }
+        .menu-btn { font-size: 28px; cursor: pointer; color: #fff; }
         
         /* القائمة الجانبية */
-        .side-nav { height: 100%; width: 0; position: fixed; z-index: 1; top: 0; right: 0; background-color: #111; overflow-x: hidden; transition: 0.3s; padding-top: 60px; border-right: 2px solid #800080; }
-        .side-nav a { padding: 15px 25px; text-decoration: none; font-size: 20px; color: #fff; display: block; }
+        .side-nav { height: 100%; width: 0; position: fixed; z-index: 1000; top: 0; right: 0; background-color: #111; overflow-x: hidden; transition: 0.3s; padding-top: 60px; border-right: 2px solid #800080; }
+        .side-nav a { padding: 15px 25px; text-decoration: none; font-size: 18px; color: #fff; display: block; border-bottom: 1px solid #222; }
         .close-btn { position: absolute; top: 10px; right: 20px; font-size: 30px; }
 
         /* شبكة الأفلام */
-        .movies-container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 15px; }
-        .movie-card { background: #1a1a1a; border-radius: 6px; overflow: hidden; border: 1px solid #333; }
-        .movie-card img { width: 100%; height: 230px; object-fit: cover; display: block; }
-        .movie-title { padding: 10px; font-size: 13px; text-align: center; height: 30px; }
-        .watch-btn { display: block; background: #800080; color: #fff; text-align: center; padding: 10px; text-decoration: none; font-weight: bold; }
+        .movies-container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; padding: 15px; }
+        .movie-card { background: #1a1a1a; border-radius: 8px; overflow: hidden; border: 1px solid #333; }
+        .movie-card img { width: 100%; height: 250px; object-fit: cover; display: block; }
+        .movie-title { padding: 10px; font-size: 14px; text-align: center; font-weight: bold; color: #eee; height: 35px; overflow: hidden; }
+        .watch-btn { display: block; background: #800080; color: #fff; text-align: center; padding: 12px; text-decoration: none; font-weight: bold; font-size: 14px; }
     </style>
 </head>
 <body>
 
     <header class="header">
         <div class="logo">
-            <img src="https://i.ibb.co/TMKphqfG/Red-Black-Modern-Movie-Cinema-Presentation-20260311-013632.jpg" alt="Logo">
+            <img src="https://i.ibb.co/5ggRsXdV/Red-Black-Modern-Movie-Cinema-Presentation-20260311-124846.jpg" alt="WatchGo Logo">
             WATCHGO
         </div>
         <div class="menu-btn" onclick="openNav()">☰</div>
@@ -49,9 +49,10 @@
 
     <div id="mySideNav" class="side-nav">
         <a href="javascript:void(0)" class="close-btn" onclick="closeNav()">&times;</a>
-        <a href="#">الرئيسية</a>
-        <a href="#">أفلام أجنبي</a>
-        <a href="#">أفلام عربي</a>
+        <a href="#">🏠 الرئيسية</a>
+        <a href="#">🎬 أفلام أجنبي</a>
+        <a href="#">📺 مسلسلات</a>
+        <a href="#">⭐ المفضلات</a>
     </div>
 
     <div class="movies-container" id="movies-grid">
@@ -61,13 +62,14 @@
         function openNav() { document.getElementById("mySideNav").style.width = "250px"; }
         function closeNav() { document.getElementById("mySideNav").style.width = "0"; }
 
+        // بيانات الأفلام التجريبية
         const movies = [
-            { title: "الفيلم الأول", poster: "https://i.ibb.co/TqtRdpKX/zf-KS4-WL0-OZ9udp-No-SYZw91-VB3a-H-scaled-433x650.jpg" },
-            { title: "الفيلم الثاني", poster: "https://i.ibb.co/xS9g9zf9/MV5-BNz-Zj-Nj-Rm-ODkt-MDZj-OC00-Mzcw-LWI4-N2-It-YTI5-OWY1-YTI2-ZGZl-Xk-Ey-Xk-Fqc-Gc-449x650.jpg" },
-            { title: "الفيلم الثالث", poster: "https://i.ibb.co/vx3FTWpm/70k-Tz0-Omjj-Ze7z-Hv-IDrq2i-KW7-PJ-scaled-433x650.jpg" },
-            { title: "الفيلم الرابع", poster: "https://i.ibb.co/nqNxs4f7/n-Op-JLL-4f-424x650.jpg" },
-            { title: "الفيلم الخامس", poster: "https://i.ibb.co/S48J73Ys/MV5-BNWU4-Zj-M3-Mj-Qt-ZTAw-MS00-YTY4-LWJh-Ym-Et-ZTFi-MTAx-Nzc4-OGFj-Xk-Ey-Xk-Fqc-Gc-V1-scaled-433x650.jpg" },
-            { title: "الفيلم السادس", poster: "https://i.ibb.co/TxbY9Q73/g0j-VBv-4f-464x650.jpg" }
+            { title: "FBI: Most Wanted", poster: "https://i.ibb.co/TqtRdpKX/zf-KS4-WL0-OZ9udp-No-SYZw91-VB3a-H-scaled-433x650.jpg" },
+            { title: "CIA: Special Ops", poster: "https://i.ibb.co/xS9g9zf9/MV5-BNz-Zj-Nj-Rm-ODkt-MDZj-OC00-Mzcw-LWI4-N2-It-YTI5-OWY1-YTI2-ZGZl-Xk-Ey-Xk-Fqc-Gc-449x650.jpg" },
+            { title: "The Rookie", poster: "https://i.ibb.co/vx3FTWpm/70k-Tz0-Omjj-Ze7z-Hv-IDrq2i-KW7-PJ-scaled-433x650.jpg" },
+            { title: "Criminal Minds", poster: "https://i.ibb.co/nqNxs4f7/n-Op-JLL-4f-424x650.jpg" },
+            { title: "Action Force", poster: "https://i.ibb.co/S48J73Ys/MV5-BNWU4-Zj-M3-Mj-Qt-ZTAw-MS00-YTY4-LWJh-Ym-Et-ZTFi-MTAx-Nzc4-OGFj-Xk-Ey-Xk-Fqc-Gc-V1-scaled-433x650.jpg" },
+            { title: "The Last Scene", poster: "https://i.ibb.co/TxbY9Q73/g0j-VBv-4f-464x650.jpg" }
         ];
 
         const grid = document.getElementById('movies-grid');
