@@ -10,9 +10,11 @@
         body { background: var(--bg); color: var(--text); font-family: sans-serif; margin: 0; }
         
         .header { background: rgba(10, 10, 10, 0.95); padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--primary); position: sticky; top: 0; z-index: 100; backdrop-filter: blur(10px); }
-        .logo img { width: 50px; height: 50px; border-radius: 50%; border: 2px solid var(--primary); object-fit: cover; }
+        .logo-container { display: flex; align-items: center; gap: 10px; }
+        .logo-container img { width: 45px; height: 45px; border-radius: 50%; border: 2px solid var(--primary); object-fit: cover; }
+        .logo-text { font-size: 20px; font-weight: bold; color: var(--text); letter-spacing: 1px; }
         .header-icons { display: flex; align-items: center; gap: 15px; }
-        .icon-btn { font-size: 24px; cursor: pointer; }
+        .icon-btn { font-size: 24px; cursor: pointer; color: var(--text); }
 
         #searchBox { display: none; padding: 15px; background: #1a1a1a; border-bottom: 2px solid var(--primary); }
         #searchBox input { width: 100%; padding: 12px; border-radius: 25px; border: 1px solid #444; background: #000; color: #fff; outline: none; text-align: center; }
@@ -32,8 +34,9 @@
 <body>
 
     <header class="header">
-        <div class="logo">
+        <div class="logo-container">
             <img src="https://i.ibb.co/5ggRsXdV/Red-Black-Modern-Movie-Cinema-Presentation-20260311-124846.jpg" alt="Logo">
+            <span class="logo-text">WATCHGO</span>
         </div>
         <div class="header-icons">
             <i class="fa-solid fa-magnifying-glass icon-btn" onclick="toggleSearch()"></i>
