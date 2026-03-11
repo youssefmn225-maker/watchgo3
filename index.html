@@ -19,25 +19,17 @@
         #searchBox { display: none; padding: 15px; background: #1a1a1a; border-bottom: 2px solid var(--primary); }
         #searchBox input { width: 100%; padding: 12px; border-radius: 25px; border: 1px solid #444; background: #000; color: #fff; outline: none; text-align: center; }
 
-        .side-nav { height: 100%; width: 0; position: fixed; z-index: 1000; top: 0; right: 0; background-color: #111; overflow-x: hidden; transition: 0.3s; padding-top: 60px; border-right: 2px solid var(--primary); }
-        .side-nav a { padding: 15px 25px; text-decoration: none; font-size: 16px; color: var(--text); display: block; border-bottom: 1px solid #222; cursor: pointer; transition: 0.3s; }
+        /* ستايل القائمة الجانبية المحدث */
+        .side-nav { height: 100%; width: 0; position: fixed; z-index: 1000; top: 0; right: 0; background-color: #111; overflow-x: hidden; transition: 0.4s; padding-top: 60px; border-right: 2px solid var(--primary); }
+        .side-nav a { padding: 18px 25px; text-decoration: none; font-size: 17px; color: var(--text); display: block; border-bottom: 1px solid #222; transition: 0.3s; cursor: pointer; }
+        .side-nav a:hover { background-color: #1a1a1a; border-right: 5px solid var(--primary); color: var(--primary); }
         
-        /* التعديل الشيك للأزرار */
-        .sub-menu a { 
-            background: #1a1a1a; 
-            margin: 5px 15px; 
-            border-radius: 8px; 
-            border: 1px solid #333; 
-            text-align: center;
-        }
-        .sub-menu a:hover { 
-            background: var(--primary); 
-            border-color: #fff; 
-            transform: translateX(-5px);
-        }
+        /* ستايل الأزرار الفرعية */
+        .sub-menu { display: none; background: #000; padding-right: 15px; }
+        .sub-menu a { font-size: 15px; color: #ccc; border-bottom: none; padding: 12px 35px; }
+        .sub-menu a:hover { color: #fff; background: #222; }
 
-        .sub-menu { display: none; background: #050505; padding-top: 10px; }
-        .close-btn { position: absolute; top: 10px; right: 20px; font-size: 30px; }
+        .close-btn { position: absolute; top: 10px; right: 20px; font-size: 35px; color: var(--primary); }
 
         .movies-container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 25px; padding: 25px; }
         .movie-card { background: var(--card-bg); border-radius: 15px; overflow: hidden; transition: all 0.4s ease; border: 2px solid transparent; }
@@ -67,11 +59,9 @@
         
         <a href="#" onclick="toggleSub('subMovies')">أفلام أجنبي ▾</a>
         <div id="subMovies" class="sub-menu">
-            <a href="#" onclick="filterMovies('IMDB')">الأعلى تقييماً ⭐</a>
+            <a href="#" onclick="filterMovies('IMDB')">الأعلى تقييماً IMDB ⭐</a>
             <a href="#" onclick="filterMovies('إسباني')">إسباني</a>
             <a href="#" onclick="filterMovies('أمريكي')">أمريكي</a>
-            <a href="#" onclick="filterMovies('فرنسي')">فرنسي</a>
-            <a href="#" onclick="filterMovies('تركي')">تركي</a>
         </div>
         
         <a href="#" onclick="toggleSub('subMoviesAr')">أفلام عربي ▾</a>
@@ -82,7 +72,7 @@
 
         <a href="#" onclick="toggleSub('subSeries')">مسلسلات أجنبي ▾</a>
         <div id="subSeries" class="sub-menu">
-            <a href="#" onclick="filterMovies('IMDB-M')">الأعلى تقييماً ⭐</a>
+            <a href="#" onclick="filterMovies('IMDB-M')">الأعلى تقييماً IMDB ⭐</a>
             <a href="#" onclick="filterMovies('إسباني-م')">إسباني</a>
             <a href="#" onclick="filterMovies('أمريكي-م')">أمريكي</a>
         </div>
@@ -107,7 +97,11 @@
 
         const movies = [
             { title: "CIA", category: "أمريكي", poster: "https://i.ibb.co/xS9g9zf9/MV5-BNz-Zj-Nj-Rm-ODkt-MDZj-OC00-Mzcw-LWI4-N2-It-YTI5-OWY1-YTI2-ZGZl-Xk-Ey-Xk-Fqc-Gc-449x650.jpg" },
-            { title: "FBI", category: "أمريكي", poster: "https://i.ibb.co/TqtRdpKX/zf-KS4-WL0-OZ9udp-No-SYZw91-VB3a-H-scaled-433x650.jpg" }
+            { title: "FBI", category: "أمريكي", poster: "https://i.ibb.co/TqtRdpKX/zf-KS4-WL0-OZ9udp-No-SYZw91-VB3a-H-scaled-433x650.jpg" },
+            { title: "Criminal Minds", category: "أمريكي", poster: "https://i.ibb.co/nqNxs4f7/n-Op-JLL-4f-424x650.jpg" },
+            { title: "The Rookie", category: "أمريكي", poster: "https://i.ibb.co/vx3FTWpm/70k-Tz0-Omjj-Ze7z-Hv-IDrq2i-KW7-PJ-scaled-433x650.jpg" },
+            { title: "Action", category: "إسباني", poster: "https://i.ibb.co/S48J73Ys/MV5-BNWU4-Zj-M3-Mj-Qt-ZTAw-MS00-YTY4-LWJh-Ym-Et-ZTFi-MTAx-Nzc4-OGFj-Xk-Ey-Xk-Fqc-Gc-V1-scaled-433x650.jpg" },
+            { title: "Mystery", category: "إسباني", poster: "https://i.ibb.co/TxbY9Q73/g0j-VBv-4f-464x650.jpg" }
         ];
 
         function filterMovies(filter = 'الكل') {
