@@ -9,27 +9,21 @@
         :root { --primary: #9b51e0; --bg: #050505; --text: #ffffff; }
         body { background: var(--bg); color: var(--text); font-family: sans-serif; margin: 0; padding: 20px; }
         
-        /* تقسيم الصفحة لـ 3 أعمدة (ديسك توب) */
         .movie-layout { display: grid; grid-template-columns: 300px 1fr 250px; gap: 20px; max-width: 1200px; margin: auto; }
-        
-        /* القسم الأيمن (الصورة) */
         .poster { width: 100%; border-radius: 12px; border: 2px solid #333; }
         
-        /* القسم الأوسط (التفاصيل) */
         .info-section h1 { color: var(--primary); margin-top: 0; }
-        .details-box { background: #111; padding: 15px; border-radius: 12px; }
-        .row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #222; }
+        .details-box { background: #111; padding: 15px; border-radius: 12px; border: 1px solid #222; }
+        .row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #222; font-size: 14px; }
+        .row span:first-child { color: #9b51e0; font-weight: bold; }
         
-        /* القسم الأيسر (الأزرار) */
         .action-panel { display: flex; flex-direction: column; gap: 10px; }
         .btn { background: var(--primary); color: white; padding: 15px; text-align: center; border-radius: 10px; text-decoration: none; font-weight: bold; }
-        .btn.download { background: #333; }
+        .btn.download { background: #333; border: 1px solid #555; }
 
-        /* منطقة التشابهات (شبكة 6 أعمدة) */
         .related-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 15px; margin-top: 30px; }
         .related-item img { width: 100%; height: 200px; object-fit: cover; border-radius: 8px; }
 
-        /* استجابة الموبايل: تتحول الصفحة لعمود واحد فوق بعض */
         @media (max-width: 768px) {
             .movie-layout { grid-template-columns: 1fr; }
             .related-grid { grid-template-columns: repeat(3, 1fr); }
@@ -44,14 +38,18 @@
         </div>
 
         <div class="info-section">
-            <h1 id="movieTitle">جاري التحميل...</h1>
-            <div class="section-title" style="color: var(--primary); font-weight:bold;">قصة الفيلم</div>
-            <p style="color: #ccc;">هنا ستظهر قصة الفيلم بالتفصيل...</p>
+            <h1 id="movieTitle">---</h1>
+            <div style="color: var(--primary); font-weight:bold; margin-bottom:10px;">قصة الفيلم</div>
+            <p style="color: #ccc; line-height: 1.6;">هذا الفيلم يستكشف القصص المحلية مع الممثلين والمنتجين بشكل احترافي ومثير...</p>
             
             <div class="details-box">
-                <div class="row"><span>القسم:</span><span id="cat">---</span></div>
-                <div class="row"><span>الجودة:</span><span>1080p WEB-DL</span></div>
+                <div class="row"><span>القسم:</span><span>أفلام أجنبي</span></div>
+                <div class="row"><span>النوع:</span><span>رعب</span></div>
+                <div class="row"><span>الجودة:</span><span>1080p / 720p WEB-DL</span></div>
+                <div class="row"><span>التوقيت:</span><span>91 دقيقة</span></div>
                 <div class="row"><span>موعد الصدور:</span><span>2026</span></div>
+                <div class="row"><span>اللغة:</span><span>الإنجليزية</span></div>
+                <div class="row"><span>الدولة:</span><span>الولايات المتحدة</span></div>
             </div>
         </div>
 
@@ -61,7 +59,7 @@
         </div>
     </div>
 
-    <div class="section-title" style="max-width: 1200px; margin: 30px auto 10px; color: var(--primary);">أفلام متشابهة</div>
+    <div style="max-width: 1200px; margin: 30px auto 10px; color: var(--primary); font-weight:bold;">أفلام متشابهة</div>
     <div class="related-grid" style="max-width: 1200px; margin: auto;">
         <div class="related-item"><img src="https://i.ibb.co/xS9g9zf9/MV5-BNz-Zj-Nj-Rm-ODkt-MDZj-OC00-Mzcw-LWI4-N2-It-YTI5-OWY1-YTI2-ZGZl-Xk-Ey-Xk-Fqc-Gc-449x650.jpg"></div>
         <div class="related-item"><img src="https://i.ibb.co/TqtRdpKX/zf-KS4-WL0-OZ9udp-No-SYZw91-VB3a-H-scaled-433x650.jpg"></div>
@@ -75,7 +73,6 @@
         const params = new URLSearchParams(window.location.search);
         document.getElementById('movieTitle').innerText = params.get('title');
         document.getElementById('poster').src = params.get('poster');
-        document.getElementById('cat').innerText = params.get('category') || "أفلام";
     </script>
 </body>
 </html>
