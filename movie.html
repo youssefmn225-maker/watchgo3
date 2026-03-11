@@ -2,39 +2,32 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>تفاصيل الفيلم</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root { --primary: #9b51e0; --bg: #050505; --text: #ffffff; }
         body { background: var(--bg); color: var(--text); font-family: sans-serif; margin: 0; padding: 15px; }
-        .header { display: flex; justify-content: space-between; padding: 10px 0; font-weight: bold; }
-        .poster { width: 100%; border-radius: 15px; margin: 10px 0; }
+        .poster { width: 100%; border-radius: 15px; margin-bottom: 20px; }
         .section-title { color: var(--primary); font-size: 18px; margin: 20px 0 10px; border-right: 4px solid var(--primary); padding-right: 10px; font-weight: bold; }
         .details-box { background: #111; padding: 15px; border-radius: 12px; }
         .row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #222; font-size: 14px; }
         .row span:first-child { color: #888; }
         .btns { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; }
         .btn { background: #1a1a1a; padding: 15px; text-align: center; border-radius: 10px; text-decoration: none; color: white; border: 1px solid #333; font-weight: bold; }
-        .btn i { display: block; margin-bottom: 8px; color: var(--primary); }
+        /* سكرول الأفلام المتشابهة */
+        .related-scroll { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px; }
+        .related-img { width: 100px; height: 140px; border-radius: 8px; object-fit: cover; }
     </style>
 </head>
 <body>
-    <div class="header" onclick="history.back()"><i class="fa-solid fa-arrow-right"></i> رجوع</div>
+    <div onclick="history.back()"><i class="fa-solid fa-arrow-right"></i> رجوع</div>
     <img src="" id="poster" class="poster">
     
-    <div class="section-title">قصة الفيلم</div>
-    <p style="color: #ccc; font-size: 14px;">يتم تحميل القصة هنا...</p>
-
     <div class="section-title">تفاصيل الفيلم</div>
     <div class="details-box">
         <div class="row"><span>القسم:</span><span id="cat">---</span></div>
-        <div class="row"><span>النوع:</span><span>جريمة - دراما</span></div>
         <div class="row"><span>الجودة:</span><span>1080p / 720p WEB-DL</span></div>
-        <div class="row"><span>التوقيت:</span><span>120 دقيقة</span></div>
         <div class="row"><span>موعد الصدور:</span><span>2025</span></div>
-        <div class="row"><span>اللغة:</span><span>الإنجليزية</span></div>
-        <div class="row"><span>الدولة:</span><span>الولايات المتحدة</span></div>
     </div>
 
     <div class="btns">
@@ -43,10 +36,14 @@
     </div>
 
     <div class="section-title">أفلام متشابهة</div>
+    <div class="related-scroll" id="relatedContainer"></div>
+
     <script>
         const params = new URLSearchParams(window.location.search);
         document.getElementById('poster').src = params.get('poster');
-        document.getElementById('cat').innerText = params.get('category') || "---";
+        document.getElementById('cat').innerText = params.get('category') || "أفلام";
+        
+        // هنا يمكنك لاحقاً إضافة كود لجلب الصور من المصفوفة
     </script>
 </body>
 </html>
