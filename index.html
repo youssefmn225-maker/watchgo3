@@ -13,22 +13,16 @@
         .logo { font-size: 20px; font-weight: bold; color: #fff; display: flex; align-items: center; }
         .logo img { width: 50px; height: 50px; border-radius: 50%; border: 2px solid #800080; object-fit: cover; margin-left: 10px; }
         
-        /* أيقونات الهيدر */
         .header-icons { display: flex; align-items: center; gap: 15px; }
         .icon-btn { font-size: 24px; cursor: pointer; color: #fff; }
 
-        /* مربع البحث الشيك */
-        #searchBox { 
-            display: none; padding: 15px; background: #1a1a1a; border-bottom: 2px solid #800080;
-        }
-        #searchBox input { 
-            width: 100%; padding: 12px; border-radius: 25px; border: 1px solid #444; 
-            background: #000; color: #fff; outline: none; text-align: center;
-        }
+        /* البحث */
+        #searchBox { display: none; padding: 15px; background: #1a1a1a; border-bottom: 2px solid #800080; }
+        #searchBox input { width: 100%; padding: 12px; border-radius: 25px; border: 1px solid #444; background: #000; color: #fff; outline: none; text-align: center; }
 
         /* القائمة الجانبية */
         .side-nav { height: 100%; width: 0; position: fixed; z-index: 1000; top: 0; right: 0; background-color: #111; overflow-x: hidden; transition: 0.3s; padding-top: 60px; border-right: 2px solid #800080; }
-        .side-nav a { padding: 15px 25px; text-decoration: none; font-size: 18px; color: #fff; display: block; border-bottom: 1px solid #222; }
+        .side-nav a { padding: 15px 25px; text-decoration: none; font-size: 18px; color: #fff; display: block; border-bottom: 1px solid #222; cursor: pointer; }
         .sub-menu { display: none; background: #1a1a1a; padding-right: 20px; }
         .close-btn { position: absolute; top: 10px; right: 20px; font-size: 30px; }
 
@@ -36,7 +30,7 @@
         .movies-container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; padding: 15px; }
         .movie-card { background: #1a1a1a; border-radius: 8px; overflow: hidden; border: 1px solid #333; }
         .movie-card img { width: 100%; height: 230px; object-fit: cover; }
-        .movie-title { padding: 8px; font-size: 13px; text-align: center; }
+        .movie-title { padding: 8px; font-size: 13px; text-align: center; color: #fff; }
         .watch-btn { display: block; background: #800080; color: #fff; text-align: center; padding: 10px; text-decoration: none; font-size: 13px; font-weight: bold; }
     </style>
 </head>
@@ -60,11 +54,16 @@
     <div id="mySideNav" class="side-nav">
         <a href="javascript:void(0)" class="close-btn" onclick="closeNav()">&times;</a>
         <a href="#" onclick="filterMovies('الكل')">🏠 الرئيسية</a>
+        
         <a href="#" onclick="toggleSubMenu()">🎬 أفلام أجنبي ▾</a>
         <div id="subMenu" class="sub-menu">
             <a href="#" onclick="filterMovies('إسباني')">🇪🇸 إسباني</a>
             <a href="#" onclick="filterMovies('أمريكي')">🇺🇸 أمريكي</a>
+            <a href="#" onclick="filterMovies('فرنسي')">🇫🇷 فرنسي</a>
+            <a href="#" onclick="filterMovies('تركي')">🇹🇷 تركي</a>
         </div>
+        
+        <a href="#" onclick="filterMovies('مسلسلات')">📺 مسلسلات</a>
         <a href="#" onclick="filterMovies('أنمي')">🏮 أنمي</a>
         <a href="#" onclick="filterMovies('أنميشن')">🧸 أنميشن</a>
     </div>
@@ -75,27 +74,22 @@
         function openNav() { document.getElementById("mySideNav").style.width = "250px"; }
         function closeNav() { document.getElementById("mySideNav").style.width = "0"; }
         function toggleSubMenu() { document.getElementById("subMenu").style.display = (document.getElementById("subMenu").style.display === "block") ? "none" : "block"; }
-        
-        function toggleSearch() {
-            const box = document.getElementById("searchBox");
-            box.style.display = (box.style.display === "block") ? "none" : "block";
-        }
+        function toggleSearch() { document.getElementById("searchBox").style.display = (document.getElementById("searchBox").style.display === "block") ? "none" : "block"; }
 
         const movies = [
             { title: "Money Heist", category: "إسباني", poster: "https://i.ibb.co/TqtRdpKX/zf-KS4-WL0-OZ9udp-No-SYZw91-VB3a-H-scaled-433x650.jpg" },
             { title: "Breaking Bad", category: "أمريكي", poster: "https://i.ibb.co/xS9g9zf9/MV5-BNz-Zj-Nj-Rm-ODkt-MDZj-OC00-Mzcw-LWI4-N2-It-YTI5-OWY1-YTI2-ZGZl-Xk-Ey-Xk-Fqc-Gc-449x650.jpg" },
-            { title: "Naruto", category: "أنمي", poster: "https://i.ibb.co/nqNxs4f7/n-Op-JLL-4f-424x650.jpg" }
+            { title: "Lupin", category: "فرنسي", poster: "https://i.ibb.co/vx3FTWpm/70k-Tz0-Omjj-Ze7z-Hv-IDrq2i-KW7-PJ-scaled-433x650.jpg" },
+            { title: "Kara Sevda", category: "تركي", poster: "https://i.ibb.co/nqNxs4f7/n-Op-JLL-4f-424x650.jpg" }
         ];
 
         function filterMovies(filter = 'الكل') {
             const query = document.getElementById('searchInput').value.toLowerCase();
             const grid = document.getElementById('movies-grid');
             grid.innerHTML = '';
-            
             movies.forEach(movie => {
                 const matchesCategory = (filter === 'الكل' || movie.category === filter);
                 const matchesSearch = movie.title.toLowerCase().includes(query);
-                
                 if (matchesCategory && matchesSearch) {
                     grid.innerHTML += `
                         <div class="movie-card">
@@ -106,8 +100,9 @@
                     `;
                 }
             });
+            if(filter !== 'الكل') closeNav();
         }
-        filterMovies(); // عرض الكل عند البداية
+        filterMovies();
     </script>
 </body>
 </html>
