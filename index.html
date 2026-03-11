@@ -19,16 +19,24 @@
         #searchBox { display: none; padding: 15px; background: #1a1a1a; border-bottom: 2px solid var(--primary); }
         #searchBox input { width: 100%; padding: 12px; border-radius: 25px; border: 1px solid #444; background: #000; color: #fff; outline: none; text-align: center; }
 
-        /* ستايل القائمة الجانبية المحدث */
         .side-nav { height: 100%; width: 0; position: fixed; z-index: 1000; top: 0; right: 0; background-color: #111; overflow-x: hidden; transition: 0.4s; padding-top: 60px; border-right: 2px solid var(--primary); }
-        .side-nav a { padding: 18px 25px; text-decoration: none; font-size: 17px; color: var(--text); display: block; border-bottom: 1px solid #222; transition: 0.3s; cursor: pointer; }
-        .side-nav a:hover { background-color: #1a1a1a; border-right: 5px solid var(--primary); color: var(--primary); }
         
-        /* ستايل الأزرار الفرعية */
-        .sub-menu { display: none; background: #000; padding-right: 15px; }
-        .sub-menu a { font-size: 15px; color: #ccc; border-bottom: none; padding: 12px 35px; }
-        .sub-menu a:hover { color: #fff; background: #222; }
+        /* تصميم الأزرار الرئيسية الشيك */
+        .main-menu-btn {
+            background: #1a1a1a;
+            margin: 10px 15px;
+            border-radius: 12px;
+            border-right: 4px solid var(--primary);
+            padding: 15px 20px !important;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+        .main-menu-btn:hover { background: #2a2a2a; transform: scale(1.02); }
 
+        .side-nav a { padding: 15px 25px; text-decoration: none; font-size: 16px; color: var(--text); display: block; border-bottom: 1px solid #222; cursor: pointer; }
+        .sub-menu { display: none; background: #000; padding: 5px 30px; }
+        .sub-menu a { border-bottom: 1px solid #111; font-size: 14px; }
+        
         .close-btn { position: absolute; top: 10px; right: 20px; font-size: 35px; color: var(--primary); }
 
         .movies-container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 25px; padding: 25px; }
@@ -57,34 +65,34 @@
         <a href="javascript:void(0)" class="close-btn" onclick="closeNav()">&times;</a>
         <a href="#" onclick="filterMovies('الكل')">الرئيسية</a>
         
-        <a href="#" onclick="toggleSub('subMovies')">أفلام أجنبي ▾</a>
+        <a href="#" class="main-menu-btn" onclick="toggleSub('subMovies')">أفلام أجنبي ▾</a>
         <div id="subMovies" class="sub-menu">
-            <a href="#" onclick="filterMovies('IMDB')">الأعلى تقييماً IMDB ⭐</a>
+            <a href="#" onclick="filterMovies('IMDB')">الأعلى تقييماً ⭐</a>
             <a href="#" onclick="filterMovies('إسباني')">إسباني</a>
             <a href="#" onclick="filterMovies('أمريكي')">أمريكي</a>
         </div>
         
-        <a href="#" onclick="toggleSub('subMoviesAr')">أفلام عربي ▾</a>
+        <a href="#" class="main-menu-btn" onclick="toggleSub('subMoviesAr')">أفلام عربي ▾</a>
         <div id="subMoviesAr" class="sub-menu">
             <a href="#" onclick="filterMovies('مصرية')">مصرية</a>
             <a href="#" onclick="filterMovies('خليجية')">خليجية</a>
         </div>
 
-        <a href="#" onclick="toggleSub('subSeries')">مسلسلات أجنبي ▾</a>
+        <a href="#" class="main-menu-btn" onclick="toggleSub('subSeries')">مسلسلات أجنبي ▾</a>
         <div id="subSeries" class="sub-menu">
-            <a href="#" onclick="filterMovies('IMDB-M')">الأعلى تقييماً IMDB ⭐</a>
+            <a href="#" onclick="filterMovies('IMDB-M')">الأعلى تقييماً ⭐</a>
             <a href="#" onclick="filterMovies('إسباني-م')">إسباني</a>
             <a href="#" onclick="filterMovies('أمريكي-م')">أمريكي</a>
         </div>
         
-        <a href="#" onclick="toggleSub('subSeriesAr')">مسلسلات عربي ▾</a>
+        <a href="#" class="main-menu-btn" onclick="toggleSub('subSeriesAr')">مسلسلات عربي ▾</a>
         <div id="subSeriesAr" class="sub-menu">
             <a href="#" onclick="filterMovies('مصرية-م')">مصرية</a>
             <a href="#" onclick="filterMovies('خليجية-م')">خليجية</a>
         </div>
         
-        <a href="#" onclick="filterMovies('أنمي')">أنمي</a>
-        <a href="#" onclick="filterMovies('أنميشن')">أنميشن</a>
+        <a href="#" class="main-menu-btn" onclick="filterMovies('أنمي')">أنمي</a>
+        <a href="#" class="main-menu-btn" onclick="filterMovies('أنميشن')">أنميشن</a>
     </div>
 
     <div class="movies-container" id="movies-grid"></div>
@@ -93,7 +101,7 @@
         function openNav() { document.getElementById("mySideNav").style.width = "250px"; }
         function closeNav() { document.getElementById("mySideNav").style.width = "0"; }
         function toggleSub(id) { document.getElementById(id).style.display = (document.getElementById(id).style.display === "block") ? "none" : "block"; }
-        function toggleSearch() { document.getElementById("searchBox").style.display = (document.getElementById("searchBox").style.display === "block") ? "none" : "block"; }
+        function toggleSearch() { document.getElementById("searchBox").style.display = (document.getElementById(id).style.display === "block") ? "none" : "block"; }
 
         const movies = [
             { title: "CIA", category: "أمريكي", poster: "https://i.ibb.co/xS9g9zf9/MV5-BNz-Zj-Nj-Rm-ODkt-MDZj-OC00-Mzcw-LWI4-N2-It-YTI5-OWY1-YTI2-ZGZl-Xk-Ey-Xk-Fqc-Gc-449x650.jpg" },
