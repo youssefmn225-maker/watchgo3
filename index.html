@@ -16,22 +16,23 @@
         .header-icons { display: flex; align-items: center; gap: 15px; }
         .icon-btn { font-size: 24px; cursor: pointer; color: var(--text); }
 
+        /* تعديل مربع البحث: خلفية بيضاء وبدون أي خطوط بنفسجية */
         #searchBox { display: none; padding: 15px; background: #050505; }
         #searchBox input { width: 100%; padding: 12px; border-radius: 25px; border: none; background: #ffffff; color: #000; outline: none; text-align: center; font-weight: bold; }
 
+        /* القائمة الجانبية */
         .side-nav { height: 100%; width: 0; position: fixed; z-index: 1000; top: 0; right: 0; background-color: #111; overflow-x: hidden; transition: 0.4s; padding-top: 20px; border-right: 2px solid var(--primary); }
+        
         .close-btn { font-size: 35px; color: var(--primary); margin: 0 20px 20px 20px; cursor: pointer; display: block; }
-        .main-menu-btn { background: #111; margin: 10px 15px; border-radius: 12px; border: 1px solid #333; padding: 15px 20px !important; font-weight: bold; display: flex; justify-content: space-between; align-items: center; transition: 0.3s; }
-        .main-menu-btn:hover { background: var(--primary); }
+
+        .main-menu-btn { background: #1a1a1a; margin: 10px 15px; border-radius: 12px; border: 1px solid #333; padding: 15px 20px !important; font-weight: bold; display: flex; justify-content: space-between; align-items: center; transition: 0.3s; }
+        .main-menu-btn:hover { background: var(--primary); border-color: #fff; transform: translateX(-5px); }
+        
         .side-nav a { padding: 15px 25px; text-decoration: none; font-size: 16px; color: var(--text); display: block; cursor: pointer; }
         .sub-menu { display: none; background: #000; padding: 5px 30px; }
         .sub-menu a { border-bottom: 1px solid #111; font-size: 14px; padding: 10px; }
         
-        /* التعديل الجراحي للديسك توب فقط */
-        .desktop-layout { display: grid; grid-template-columns: 1fr 300px; gap: 20px; max-width: 1200px; margin: auto; }
-        @media (max-width: 800px) { .desktop-layout { grid-template-columns: 1fr; } }
-
-        .movies-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 25px; padding: 25px; }
+        .movies-container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 25px; padding: 25px; }
         .movie-card { background: var(--card-bg); border-radius: 15px; overflow: hidden; transition: all 0.4s ease; border: 2px solid transparent; }
         .movie-card:hover { transform: scale(1.08); border-color: var(--primary); box-shadow: 0 0 20px var(--primary); }
         .movie-card img { width: 100%; height: 230px; object-fit: cover; }
@@ -56,38 +57,38 @@
     <div id="mySideNav" class="side-nav">
         <span class="close-btn" onclick="closeNav()">&times;</span>
         <a href="#" onclick="filterMovies('الكل')">الرئيسية</a>
+        
         <a href="#" class="main-menu-btn" onclick="toggleSub('subMovies')">أفلام أجنبي ▾</a>
         <div id="subMovies" class="sub-menu">
             <a href="#" onclick="filterMovies('IMDB')">الأعلى تقييماً IMDB ⭐</a>
             <a href="#" onclick="filterMovies('إسباني')">إسباني</a>
             <a href="#" onclick="filterMovies('أمريكي')">أمريكي</a>
         </div>
+        
         <a href="#" class="main-menu-btn" onclick="toggleSub('subMoviesAr')">أفلام عربي ▾</a>
         <div id="subMoviesAr" class="sub-menu">
             <a href="#" onclick="filterMovies('مصرية')">مصرية</a>
             <a href="#" onclick="filterMovies('خليجية')">خليجية</a>
         </div>
+
         <a href="#" class="main-menu-btn" onclick="toggleSub('subSeries')">مسلسلات أجنبي ▾</a>
         <div id="subSeries" class="sub-menu">
             <a href="#" onclick="filterMovies('IMDB-M')">الأعلى تقييماً IMDB ⭐</a>
             <a href="#" onclick="filterMovies('إسباني-م')">إسباني</a>
             <a href="#" onclick="filterMovies('أمريكي-م')">أمريكي</a>
         </div>
+        
         <a href="#" class="main-menu-btn" onclick="toggleSub('subSeriesAr')">مسلسلات عربي ▾</a>
         <div id="subSeriesAr" class="sub-menu">
             <a href="#" onclick="filterMovies('مصرية-م')">مصرية</a>
             <a href="#" onclick="filterMovies('خليجية-م')">خليجية</a>
         </div>
+        
         <a href="#" class="main-menu-btn" onclick="filterMovies('أنمي')">أنمي</a>
         <a href="#" class="main-menu-btn" onclick="filterMovies('أنميشن')">أنميشن</a>
     </div>
 
-    <div class="desktop-layout">
-        <div class="movies-container" id="movies-grid"></div>
-        <aside style="padding: 25px;">
-            <h2 style="color:var(--primary)">أحدث الحلقات</h2>
-            </aside>
-    </div>
+    <div class="movies-container" id="movies-grid"></div>
 
     <script>
         function openNav() { document.getElementById("mySideNav").style.width = "250px"; }
@@ -112,6 +113,7 @@
             grid.innerHTML = '';
             movies.forEach(movie => {
                 if (filter === 'الكل' || movie.category === filter) {
+                    // الربط تم هنا:
                     grid.innerHTML += `<div class="movie-card">
                         <img src="${movie.poster}">
                         <a href="movie.html?title=${encodeURIComponent(movie.title)}&poster=${encodeURIComponent(movie.poster)}" class="watch-btn">شاهد الآن</a>
