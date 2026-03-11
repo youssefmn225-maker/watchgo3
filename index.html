@@ -6,6 +6,7 @@
     <title>WatchGo - عالم السينما</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
+        /* كودك الأصلي بدون أي مساس */
         :root { --primary: #9b51e0; --bg: #050505; --card-bg: #121212; --text: #ffffff; }
         body { background: var(--bg); color: var(--text); font-family: sans-serif; margin: 0; }
         
@@ -16,11 +17,9 @@
         .header-icons { display: flex; align-items: center; gap: 15px; }
         .icon-btn { font-size: 24px; cursor: pointer; color: var(--text); }
 
-        /* تعديل مربع البحث: خلفية بيضاء وبدون أي خطوط بنفسجية */
         #searchBox { display: none; padding: 15px; background: #050505; }
         #searchBox input { width: 100%; padding: 12px; border-radius: 25px; border: none; background: #ffffff; color: #000; outline: none; text-align: center; font-weight: bold; }
 
-        /* القائمة الجانبية */
         .side-nav { height: 100%; width: 0; position: fixed; z-index: 1000; top: 0; right: 0; background-color: #111; overflow-x: hidden; transition: 0.4s; padding-top: 20px; border-right: 2px solid var(--primary); }
         
         .close-btn { font-size: 35px; color: var(--primary); margin: 0 20px 20px 20px; cursor: pointer; display: block; }
@@ -37,6 +36,36 @@
         .movie-card:hover { transform: scale(1.08); border-color: var(--primary); box-shadow: 0 0 20px var(--primary); }
         .movie-card img { width: 100%; height: 230px; object-fit: cover; }
         .watch-btn { display: block; background: var(--primary); color: #fff; text-align: center; padding: 12px; text-decoration: none; font-weight: bold; }
+
+        /* ========================================= */
+        /* التعديل الخاص بالديسك توب فقط (بدون التأثير على الموبايل) */
+        /* ========================================= */
+        @media (min-width: 900px) {
+            .desktop-wrapper {
+                display: grid;
+                grid-template-columns: 1fr 300px; /* الأفلام تاخد المساحة الأكبر، والقائمة الجانبية 300 بيكسل */
+                gap: 20px;
+                max-width: 1200px;
+                margin: 20px auto;
+                align-items: start; /* السر هنا! بيمنع الكروت إنها تتمط وتبقى عواميد */
+            }
+            .movies-container {
+                grid-template-columns: repeat(4, 1fr); /* 4 كروت في الديسك توب بدل 2 */
+                padding: 0; /* تظبيط المسافات للديسك توب */
+            }
+            .desktop-sidebar {
+                display: block;
+                background: #111;
+                padding: 20px;
+                border-radius: 15px;
+                border: 1px solid #333;
+            }
+        }
+        @media (max-width: 899px) {
+            .desktop-sidebar {
+                display: none; /* إخفاء القائمة الجانبية دي في الموبايل عشان يفضل زي ما كان */
+            }
+        }
     </style>
 </head>
 <body>
@@ -88,7 +117,15 @@
         <a href="#" class="main-menu-btn" onclick="filterMovies('أنميشن')">أنميشن</a>
     </div>
 
-    <div class="movies-container" id="movies-grid"></div>
+    <div class="desktop-wrapper">
+        <div class="movies-container" id="movies-grid"></div>
+        
+        <aside class="desktop-sidebar">
+            <h3 style="color: var(--primary); margin-top: 0;">أحدث الحلقات</h3>
+            <div style="font-size: 14px; margin-bottom: 10px; border-bottom: 1px solid #333; padding-bottom: 5px;">📺 مسلسل NCIS حلقة 10</div>
+            <div style="font-size: 14px; margin-bottom: 10px; border-bottom: 1px solid #333; padding-bottom: 5px;">📺 مسلسل Scarpetta حلقة 5</div>
+        </aside>
+    </div>
 
     <script>
         function openNav() { document.getElementById("mySideNav").style.width = "250px"; }
@@ -113,7 +150,6 @@
             grid.innerHTML = '';
             movies.forEach(movie => {
                 if (filter === 'الكل' || movie.category === filter) {
-                    // الربط تم هنا:
                     grid.innerHTML += `<div class="movie-card">
                         <img src="${movie.poster}">
                         <a href="movie.html?title=${encodeURIComponent(movie.title)}&poster=${encodeURIComponent(movie.poster)}" class="watch-btn">شاهد الآن</a>
