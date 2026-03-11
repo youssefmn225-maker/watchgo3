@@ -9,8 +9,8 @@
         :root { --primary: #9b51e0; --bg: #050505; --card-bg: #121212; --text: #ffffff; }
         body { background: var(--bg); color: var(--text); font-family: sans-serif; margin: 0; }
         
-        .header { background: rgba(10, 10, 10, 0.95); padding: 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--primary); position: sticky; top: 0; z-index: 100; backdrop-filter: blur(10px); }
-        .logo { font-size: 18px; font-weight: bold; }
+        .header { background: rgba(10, 10, 10, 0.95); padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--primary); position: sticky; top: 0; z-index: 100; backdrop-filter: blur(10px); }
+        .logo img { width: 50px; height: 50px; border-radius: 50%; border: 2px solid var(--primary); object-fit: cover; }
         .header-icons { display: flex; align-items: center; gap: 15px; }
         .icon-btn { font-size: 24px; cursor: pointer; }
 
@@ -22,23 +22,9 @@
         .sub-menu { display: none; background: #1a1a1a; padding-right: 20px; }
         .close-btn { position: absolute; top: 10px; right: 20px; font-size: 30px; }
 
-        /* تعديلات كروت الأفلام */
         .movies-container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 25px; padding: 25px; }
-        .movie-card { 
-            background: var(--card-bg); 
-            border-radius: 15px; 
-            overflow: hidden; 
-            transition: all 0.4s ease; 
-            border: 2px solid transparent;
-        }
-        
-        /* التكبير واللمعان عند المرور بالماوس */
-        .movie-card:hover { 
-            transform: scale(1.08); 
-            border-color: var(--primary);
-            box-shadow: 0 0 20px var(--primary);
-        }
-        
+        .movie-card { background: var(--card-bg); border-radius: 15px; overflow: hidden; transition: all 0.4s ease; border: 2px solid transparent; }
+        .movie-card:hover { transform: scale(1.08); border-color: var(--primary); box-shadow: 0 0 20px var(--primary); }
         .movie-card img { width: 100%; height: 230px; object-fit: cover; }
         .watch-btn { display: block; background: var(--primary); color: #fff; text-align: center; padding: 12px; text-decoration: none; font-weight: bold; }
     </style>
@@ -46,7 +32,9 @@
 <body>
 
     <header class="header">
-        <div class="logo">WATCHGO</div>
+        <div class="logo">
+            <img src="https://i.ibb.co/5ggRsXdV/Red-Black-Modern-Movie-Cinema-Presentation-20260311-124846.jpg" alt="Logo">
+        </div>
         <div class="header-icons">
             <i class="fa-solid fa-magnifying-glass icon-btn" onclick="toggleSearch()"></i>
             <i class="fa-solid fa-bars icon-btn" onclick="openNav()"></i>
