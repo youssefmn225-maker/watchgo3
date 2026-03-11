@@ -4,24 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WatchGo - عالم السينما</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         body { background: #0a0a0a; color: #fff; font-family: sans-serif; margin: 0; }
         
-        /* الهيدر */
         .header { background: #111; padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #800080; position: sticky; top: 0; z-index: 100; }
         .logo { font-size: 20px; font-weight: bold; color: #fff; display: flex; align-items: center; }
         .logo img { width: 50px; height: 50px; border-radius: 50%; border: 2px solid #800080; object-fit: cover; margin-left: 10px; background: #000; }
         
         .menu-btn { font-size: 28px; cursor: pointer; color: #fff; }
 
-        /* القائمة الجانبية */
         .side-nav { height: 100%; width: 0; position: fixed; z-index: 1000; top: 0; right: 0; background-color: #111; overflow-x: hidden; transition: 0.3s; padding-top: 60px; border-right: 2px solid #800080; }
         .side-nav a, .side-nav .search-input { padding: 15px 25px; text-decoration: none; font-size: 18px; color: #fff; display: block; border-bottom: 1px solid #222; cursor: pointer; }
+        
+        /* تنسيق القائمة الفرعية */
+        .sub-menu { display: none; background: #1a1a1a; padding-right: 20px; }
+        
         .search-input { width: 80%; margin: 10px auto; border-radius: 20px; border: none; padding: 10px; background: #222; color: #fff; }
         .close-btn { position: absolute; top: 10px; right: 20px; font-size: 30px; }
 
-        /* شبكة الأفلام */
         .movies-container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; padding: 15px; }
         .movie-card { background: #1a1a1a; border-radius: 8px; overflow: hidden; border: 1px solid #333; }
         .movie-card img { width: 100%; height: 250px; object-fit: cover; display: block; }
@@ -41,11 +41,19 @@
 
     <div id="mySideNav" class="side-nav">
         <a href="javascript:void(0)" class="close-btn" onclick="closeNav()">&times;</a>
-        <input type="text" id="searchInput" class="search-input" placeholder="🔍 بحث عن فيلم..." onkeyup="filterMovies()">
+        <input type="text" id="searchInput" class="search-input" placeholder="🔍 بحث..." onkeyup="filterMovies()">
+        
         <a href="#" onclick="filterMovies('الكل')">🏠 الرئيسية</a>
-        <a href="#" onclick="filterMovies('أجنبي')">🎬 أفلام أجنبي</a>
+        
+        <a href="#" onclick="toggleSubMenu()">🎬 أفلام أجنبي ▾</a>
+        <div id="subMenu" class="sub-menu">
+            <a href="#" onclick="filterMovies('إسباني')">🇪🇸 إسباني</a>
+            <a href="#" onclick="filterMovies('أمريكي')">🇺🇸 أمريكي</a>
+            <a href="#" onclick="filterMovies('فرنسي')">🇫🇷 فرنسي</a>
+            <a href="#" onclick="filterMovies('تركي')">🇹🇷 تركي</a>
+        </div>
+        
         <a href="#" onclick="filterMovies('عربي')">🎭 أفلام عربي</a>
-        <a href="#" onclick="filterMovies('مسلسلات')">📺 مسلسلات</a>
     </div>
 
     <div class="movies-container" id="movies-grid"></div>
@@ -53,21 +61,25 @@
     <script>
         function openNav() { document.getElementById("mySideNav").style.width = "250px"; }
         function closeNav() { document.getElementById("mySideNav").style.width = "0"; }
+        
+        // فتح وإغلاق قائمة الأجنبي
+        function toggleSubMenu() {
+            const sub = document.getElementById("subMenu");
+            sub.style.display = (sub.style.display === "block") ? "none" : "block";
+        }
 
         const movies = [
-            { title: "FBI: Most Wanted", category: "أجنبي", poster: "https://i.ibb.co/TqtRdpKX/zf-KS4-WL0-OZ9udp-No-SYZw91-VB3a-H-scaled-433x650.jpg" },
-            { title: "CIA: Special Ops", category: "أجنبي", poster: "https://i.ibb.co/xS9g9zf9/MV5-BNz-Zj-Nj-Rm-ODkt-MDZj-OC00-Mzcw-LWI4-N2-It-YTI5-OWY1-YTI2-ZGZl-Xk-Ey-Xk-Fqc-Gc-449x650.jpg" },
-            { title: "فيلم عربي قوي", category: "عربي", poster: "https://i.ibb.co/vx3FTWpm/70k-Tz0-Omjj-Ze7z-Hv-IDrq2i-KW7-PJ-scaled-433x650.jpg" },
-            { title: "Criminal Minds", category: "أجنبي", poster: "https://i.ibb.co/nqNxs4f7/n-Op-JLL-4f-424x650.jpg" },
-            { title: "مسلسل جامد", category: "مسلسلات", poster: "https://i.ibb.co/S48J73Ys/MV5-BNWU4-Zj-M3-Mj-Qt-ZTAw-MS00-YTY4-LWJh-Ym-Et-ZTFi-MTAx-Nzc4-OGFj-Xk-Ey-Xk-Fqc-Gc-V1-scaled-433x650.jpg" },
-            { title: "فيلم أكشن عربي", category: "عربي", poster: "https://i.ibb.co/TxbY9Q73/g0j-VBv-4f-464x650.jpg" }
+            { title: "Money Heist", category: "إسباني", poster: "https://i.ibb.co/TqtRdpKX/zf-KS4-WL0-OZ9udp-No-SYZw91-VB3a-H-scaled-433x650.jpg" },
+            { title: "Breaking Bad", category: "أمريكي", poster: "https://i.ibb.co/xS9g9zf9/MV5-BNz-Zj-Nj-Rm-ODkt-MDZj-OC00-Mzcw-LWI4-N2-It-YTI5-OWY1-YTI2-ZGZl-Xk-Ey-Xk-Fqc-Gc-449x650.jpg" },
+            { title: "Lupin", category: "فرنسي", poster: "https://i.ibb.co/vx3FTWpm/70k-Tz0-Omjj-Ze7z-Hv-IDrq2i-KW7-PJ-scaled-433x650.jpg" },
+            { title: "Kara Sevda", category: "تركي", poster: "https://i.ibb.co/nqNxs4f7/n-Op-JLL-4f-424x650.jpg" }
         ];
 
         function renderMovies(filter = 'الكل', search = '') {
             const grid = document.getElementById('movies-grid');
             grid.innerHTML = '';
             movies.forEach(movie => {
-                if ((filter === 'الكل' || movie.category === filter) && movie.title.includes(search)) {
+                if ((filter === 'الكل' || movie.category === filter) && movie.title.toLowerCase().includes(search.toLowerCase())) {
                     grid.innerHTML += `
                         <div class="movie-card">
                             <img src="${movie.poster}" alt="${movie.title}">
@@ -82,10 +94,10 @@
         function filterMovies(category = 'الكل') {
             const search = document.getElementById('searchInput').value;
             renderMovies(category, search);
-            if(category !== 'الكل') closeNav(); // نقفل القائمة بعد الاختيار
+            if(category !== 'الكل') closeNav();
         }
 
-        renderMovies(); // عرض الكل عند البداية
+        renderMovies();
     </script>
 </body>
 </html>
