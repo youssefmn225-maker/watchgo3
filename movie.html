@@ -2,45 +2,36 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>تفاصيل الفيلم - WatchGo</title>
     <style>
-        :root { --primary: #9b51e0; --bg: #050505; --text: #ffffff; }
-        body { background: var(--bg); color: var(--text); font-family: sans-serif; margin: 0; padding-bottom: 50px; }
-        
-        /* الصورة الكبيرة في المنتصف */
-        .poster-container { width: 100%; height: 400px; display: flex; justify-content: center; overflow: hidden; border-bottom: 3px solid var(--primary); }
+        body { background: #050505; color: #fff; font-family: sans-serif; margin: 0; padding-bottom: 50px; }
+        .poster-container { width: 100%; height: 400px; display: flex; justify-content: center; overflow: hidden; border-bottom: 3px solid #9b51e0; }
         .poster-container img { width: 100%; max-width: 400px; object-fit: cover; }
-
         .info-section { padding: 20px; text-align: center; }
-        h1 { margin: 10px 0; color: var(--primary); }
+        h1 { margin: 10px 0; color: #9b51e0; }
         .details-grid { display: flex; justify-content: center; gap: 20px; margin: 15px 0; color: #ccc; font-size: 14px; }
-        
-        /* الأزرار */
         .actions { display: flex; flex-direction: column; gap: 10px; padding: 20px; }
         .btn { padding: 15px; border-radius: 10px; text-align: center; font-weight: bold; text-decoration: none; color: #fff; }
-        .btn-watch { background: var(--primary); }
+        .btn-watch { background: #9b51e0; }
         .btn-download { background: #333; border: 1px solid #555; }
-
-        /* الأفلام المتشابهة */
         .related { padding: 20px; }
-        .related-title { border-right: 4px solid var(--primary); padding-right: 10px; margin-bottom: 15px; }
+        .related-title { border-right: 4px solid #9b51e0; padding-right: 10px; margin-bottom: 15px; }
     </style>
 </head>
 <body>
 
     <div class="poster-container">
-        <img src="https://i.ibb.co/TqtRdpKX/zf-KS4-WL0-OZ9udp-No-SYZw91-VB3a-H-scaled-433x650.jpg" alt="Movie Poster">
+        <img id="moviePoster" src="" alt="Movie Poster">
     </div>
 
     <div class="info-section">
-        <h1>FBI</h1>
+        <h1 id="movieTitle">---</h1>
         <div class="details-grid">
             <span>التقييم: ⭐ 8.5</span>
             <span>البلد: أمريكي</span>
             <span>التصنيف: دراما</span>
         </div>
-        <p>هذا الفيلم يدور حول أحداث مثيرة في مكتب التحقيقات الفيدرالي...</p>
+        <p>هذا الفيلم يدور حول أحداث مثيرة ومشوّقة...</p>
     </div>
 
     <div class="actions">
@@ -50,7 +41,12 @@
 
     <div class="related">
         <h3 class="related-title">أفلام متشابهة</h3>
-        </div>
+    </div>
 
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        document.getElementById('movieTitle').innerText = params.get('title');
+        document.getElementById('moviePoster').src = params.get('poster');
+    </script>
 </body>
 </html>
