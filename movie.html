@@ -6,16 +6,21 @@
     <title>تفاصيل الفيلم - WatchGo</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --primary: #9b51e0; --bg: #050505; --text: #ffffff; }
+        :root { --primary: #9b51e0; --bg: #050505; --text: #ffffff; --imdb-gold: #f5c518; }
         body { background: var(--bg); color: var(--text); font-family: sans-serif; margin: 0; padding: 20px; }
         
         .movie-layout { display: grid; grid-template-columns: 300px 1fr 250px; gap: 20px; max-width: 1200px; margin: auto; }
         .poster { width: 100%; border-radius: 12px; border: 2px solid #333; }
         
+        /* إضافة التقييم وزر التريلر */
+        .poster-meta { display: flex; gap: 10px; margin-top: 10px; }
+        .imdb-badge { background: var(--imdb-gold); color: #000; padding: 5px 12px; border-radius: 5px; font-weight: bold; font-size: 16px; }
+        .trailer-btn { background: #222; border: 1px solid #444; padding: 5px 12px; border-radius: 5px; color: #fff; text-decoration: none; font-size: 14px; }
+        
         .info-section h1 { color: var(--primary); margin-top: 0; }
         .details-box { background: #111; padding: 15px; border-radius: 12px; border: 1px solid #222; }
         .row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #222; font-size: 14px; }
-        .row span:first-child { color: #9b51e0; font-weight: bold; }
+        .row span:first-child { color: var(--primary); font-weight: bold; }
         
         .action-panel { display: flex; flex-direction: column; gap: 10px; }
         .btn { background: var(--primary); color: white; padding: 15px; text-align: center; border-radius: 10px; text-decoration: none; font-weight: bold; }
@@ -35,6 +40,10 @@
     <div class="movie-layout">
         <div class="poster-container">
             <img src="" id="poster" class="poster">
+            <div class="poster-meta">
+                <div class="imdb-badge"><i class="fa-solid fa-star"></i> 4.1</div>
+                <a href="#" class="trailer-btn"><i class="fa-solid fa-tv"></i> مشاهدة التريلر</a>
+            </div>
         </div>
 
         <div class="info-section">
@@ -45,7 +54,7 @@
             <div class="details-box">
                 <div class="row"><span>القسم:</span><span>أفلام أجنبي</span></div>
                 <div class="row"><span>النوع:</span><span>رعب</span></div>
-                <div class="row"><span>الجودة:</span><span>1080p / 720p WEB-DL</span></div>
+                <div class="row"><span>الجودة:</span><span>1080p WEB-DL</span></div>
                 <div class="row"><span>التوقيت:</span><span>91 دقيقة</span></div>
                 <div class="row"><span>موعد الصدور:</span><span>2026</span></div>
                 <div class="row"><span>اللغة:</span><span>الإنجليزية</span></div>
