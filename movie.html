@@ -141,15 +141,10 @@
 
         async function getMovieDetails() {
             if(!movieId) return;
-            
-            // لقد قمنا بتعديل هذا السطر ليطلب البوسترات الإنجليزية بشكل خاص
             const res = await fetch(`https://api.themoviedb.org/3/${type}/${movieId}?api_key=${API_KEY}&language=ar-AR&append_to_response=videos,credits,images&include_image_language=en,null`);
             movieData = await res.json();
             
-            // تحديث العنوان ليظهر الاسم الأصلي (الأجنبي) المكتوب كـ Text
             document.getElementById('movieTitle').innerText = movieData.original_title || movieData.original_name;
-            
-            // التعديل هنا: محاولة إيجاد البوستر الإنجليزي أولاً من قائمة الصور المجلوبة
             const englishPoster = movieData.images?.posters?.find(p => p.iso_639_1 === 'en');
             const posterPath = englishPoster ? englishPoster.file_path : movieData.poster_path;
             document.getElementById('poster').src = IMG_URL + posterPath;
@@ -211,7 +206,6 @@
             data.episodes.forEach(ep => {
                 list.innerHTML += `<div class="episode-card" onclick="showToast('الحلقة ستتوفر قريباً', 'fa-clock')"><span>الحلقة ${ep.episode_number}</span><i class="fa-solid fa-play"></i></div>`;
             });
-
             document.querySelectorAll('.season-btn').forEach(b => b.classList.remove('active'));
             if(btnElement) btnElement.classList.add('active');
         }
@@ -223,6 +217,11 @@
                 list.push({ id: movieId, title: movieData.original_title || movieData.original_name, poster: movieData.poster_path, type: type });
                 localStorage.setItem(listName, JSON.stringify(list));
                 showToast(`تمت الإضافة إلى ${label} بنجاح!`);
+                setTimeout(() => {
+                    if(confirm(`تمت الإضافة! هل تريد الانتقال لصفحة ${label}؟`)) {
+                        window.location.href = `list.html?type=${listName}`;
+                    }
+                }, 1000);
             } else {
                 showToast(`العمل موجود بالفعل في ${label}`, 'fa-exclamation-circle');
             }
