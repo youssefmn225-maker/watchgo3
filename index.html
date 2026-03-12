@@ -37,35 +37,12 @@
         .movie-card img { width: 100%; height: 230px; object-fit: cover; }
         .watch-btn { display: block; background: var(--primary); color: #fff; text-align: center; padding: 12px; text-decoration: none; font-weight: bold; }
 
-        /* ========================================= */
-        /* التعديل الخاص بالديسك توب فقط (بدون التأثير على الموبايل) */
-        /* ========================================= */
         @media (min-width: 900px) {
-            .desktop-wrapper {
-                display: grid;
-                grid-template-columns: 1fr 300px; /* الأفلام تاخد المساحة الأكبر، والقائمة الجانبية 300 بيكسل */
-                gap: 20px;
-                max-width: 1200px;
-                margin: 20px auto;
-                align-items: start; /* السر هنا! بيمنع الكروت إنها تتمط وتبقى عواميد */
-            }
-            .movies-container {
-                grid-template-columns: repeat(4, 1fr); /* 4 كروت في الديسك توب بدل 2 */
-                padding: 0; /* تظبيط المسافات للديسك توب */
-            }
-            .desktop-sidebar {
-                display: block;
-                background: #111;
-                padding: 20px;
-                border-radius: 15px;
-                border: 1px solid #333;
-            }
+            .desktop-wrapper { display: grid; grid-template-columns: 1fr 300px; gap: 20px; max-width: 1200px; margin: 20px auto; align-items: start; }
+            .movies-container { grid-template-columns: repeat(4, 1fr); padding: 0; }
+            .desktop-sidebar { display: block; background: #111; padding: 20px; border-radius: 15px; border: 1px solid #333; }
         }
-        @media (max-width: 899px) {
-            .desktop-sidebar {
-                display: none; /* إخفاء القائمة الجانبية دي في الموبايل عشان يفضل زي ما كان */
-            }
-        }
+        @media (max-width: 899px) { .desktop-sidebar { display: none; } }
     </style>
 </head>
 <body>
@@ -81,53 +58,47 @@
         </div>
     </header>
 
-    <div id="searchBox"><input type="text" id="searchInput" placeholder="ابحث..." onkeyup="filterMovies()"></div>
+    <div id="searchBox"><input type="text" id="searchInput" placeholder="ابحث..." onkeyup="searchFromApi(this.value)"></div>
 
     <div id="mySideNav" class="side-nav">
         <span class="close-btn" onclick="closeNav()">&times;</span>
-        <a href="#" onclick="filterMovies('الكل')">الرئيسية</a>
+        <a href="#" onclick="fetchFromApi('movie/popular')">الرئيسية</a>
         
         <a href="#" class="main-menu-btn" onclick="toggleSub('subMovies')">أفلام أجنبي ▾</a>
         <div id="subMovies" class="sub-menu">
-            <a href="#" onclick="filterMovies('IMDB')">الأعلى تقييماً IMDB ⭐</a>
-            <a href="#" onclick="filterMovies('إسباني')">إسباني</a>
-            <a href="#" onclick="filterMovies('أمريكي')">أمريكي</a>
+            <a href="#" onclick="fetchFromApi('movie/top_rated')">الأعلى تقييماً IMDB ⭐</a>
+            <a href="#" onclick="fetchFromApi('discover/movie', '28')">أكشن</a>
+            <a href="#" onclick="fetchFromApi('discover/movie', '27')">رعب</a>
         </div>
         
         <a href="#" class="main-menu-btn" onclick="toggleSub('subMoviesAr')">أفلام عربي ▾</a>
         <div id="subMoviesAr" class="sub-menu">
-            <a href="#" onclick="filterMovies('مصرية')">مصرية</a>
-            <a href="#" onclick="filterMovies('خليجية')">خليجية</a>
+            <a href="#" onclick="fetchFromApi('discover/movie', '', 'ar')">مصرية</a>
         </div>
 
         <a href="#" class="main-menu-btn" onclick="toggleSub('subSeries')">مسلسلات أجنبي ▾</a>
         <div id="subSeries" class="sub-menu">
-            <a href="#" onclick="filterMovies('IMDB-M')">الأعلى تقييماً IMDB ⭐</a>
-            <a href="#" onclick="filterMovies('إسباني-م')">إسباني</a>
-            <a href="#" onclick="filterMovies('أمريكي-م')">أمريكي</a>
+            <a href="#" onclick="fetchFromApi('tv/top_rated')">الأعلى تقييماً ⭐</a>
+            <a href="#" onclick="fetchFromApi('tv/popular')">الأكثر شهرة</a>
         </div>
-        
-        <a href="#" class="main-menu-btn" onclick="toggleSub('subSeriesAr')">مسلسلات عربي ▾</a>
-        <div id="subSeriesAr" class="sub-menu">
-            <a href="#" onclick="filterMovies('مصرية-م')">مصرية</a>
-            <a href="#" onclick="filterMovies('خليجية-م')">خليجية</a>
-        </div>
-        
-        <a href="#" class="main-menu-btn" onclick="filterMovies('أنمي')">أنمي</a>
-        <a href="#" class="main-menu-btn" onclick="filterMovies('أنميشن')">أنميشن</a>
+
+        <a href="#" class="main-menu-btn" onclick="fetchFromApi('discover/movie', '16')">أنمي</a>
+        <a href="#" class="main-menu-btn" onclick="fetchFromApi('discover/movie', '16')">أنميشن</a>
     </div>
 
     <div class="desktop-wrapper">
         <div class="movies-container" id="movies-grid"></div>
-        
         <aside class="desktop-sidebar">
             <h3 style="color: var(--primary); margin-top: 0;">أحدث الحلقات</h3>
-            <div style="font-size: 14px; margin-bottom: 10px; border-bottom: 1px solid #333; padding-bottom: 5px;">📺 مسلسل NCIS حلقة 10</div>
-            <div style="font-size: 14px; margin-bottom: 10px; border-bottom: 1px solid #333; padding-bottom: 5px;">📺 مسلسل Scarpetta حلقة 5</div>
+            <div style="font-size: 14px; margin-bottom: 10px; border-bottom: 1px solid #333; padding-bottom: 5px;">📺 سيتم التحديث قريباً...</div>
         </aside>
     </div>
 
     <script>
+        const API_KEY = 'ضع_مفتاحك_هنا';
+        const BASE_URL = 'https://api.themoviedb.org/3';
+        const IMG_URL = 'https://image.tmdb.org/t/p/w500';
+
         function openNav() { document.getElementById("mySideNav").style.width = "250px"; }
         function closeNav() { document.getElementById("mySideNav").style.width = "0"; }
         function toggleSub(id) { document.getElementById(id).style.display = (document.getElementById(id).style.display === "block") ? "none" : "block"; }
@@ -136,29 +107,43 @@
             box.style.display = (box.style.display === "block") ? "none" : "block"; 
         }
 
-        const movies = [
-            { title: "CIA", category: "أمريكي", poster: "https://i.ibb.co/xS9g9zf9/MV5-BNz-Zj-Nj-Rm-ODkt-MDZj-OC00-Mzcw-LWI4-N2-It-YTI5-OWY1-YTI2-ZGZl-Xk-Ey-Xk-Fqc-Gc-449x650.jpg" },
-            { title: "FBI", category: "أمريكي", poster: "https://i.ibb.co/TqtRdpKX/zf-KS4-WL0-OZ9udp-No-SYZw91-VB3a-H-scaled-433x650.jpg" },
-            { title: "Criminal Minds", category: "أمريكي", poster: "https://i.ibb.co/nqNxs4f7/n-Op-JLL-4f-424x650.jpg" },
-            { title: "The Rookie", category: "أمريكي", poster: "https://i.ibb.co/vx3FTWpm/70k-Tz0-Omjj-Ze7z-Hv-IDrq2i-KW7-PJ-scaled-433x650.jpg" },
-            { title: "Action", category: "إسباني", poster: "https://i.ibb.co/S48J73Ys/MV5-BNWU4-Zj-M3-Mj-Qt-ZTAw-MS00-YTY4-LWJh-Ym-Et-ZTFi-MTAx-Nzc4-OGFj-Xk-Ey-Xk-Fqc-Gc-V1-scaled-433x650.jpg" },
-            { title: "Mystery", category: "إسباني", poster: "https://i.ibb.co/TxbY9Q73/g0j-VBv-4f-464x650.jpg" }
-        ];
+        async function fetchFromApi(endpoint, genreId = '', lang = 'ar-AR') {
+            const grid = document.getElementById('movies-grid');
+            grid.innerHTML = '<p style="color:white; padding:20px;">جاري تحميل المحتوى...</p>';
+            let url = `${BASE_URL}/${endpoint}?api_key=${API_KEY}&language=${lang}`;
+            if(genreId) url += `&with_genres=${genreId}`;
 
-        function filterMovies(filter = 'الكل') {
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                displayResults(data.results);
+            } catch(e) { grid.innerHTML = '<p>خطأ في جلب البيانات</p>'; }
+            closeNav();
+        }
+
+        async function searchFromApi(query) {
+            if(!query) return;
+            const url = `${BASE_URL}/search/multi?api_key=${API_KEY}&language=ar-AR&query=${query}`;
+            const response = await fetch(url);
+            const data = await response.json();
+            displayResults(data.results);
+        }
+
+        function displayResults(results) {
             const grid = document.getElementById('movies-grid');
             grid.innerHTML = '';
-            movies.forEach(movie => {
-                if (filter === 'الكل' || movie.category === filter) {
-                    grid.innerHTML += `<div class="movie-card">
-                        <img src="${movie.poster}">
-                        <a href="movie.html?title=${encodeURIComponent(movie.title)}&poster=${encodeURIComponent(movie.poster)}" class="watch-btn">شاهد الآن</a>
+            results.forEach(item => {
+                if(!item.poster_path) return;
+                const title = item.title || item.name;
+                grid.innerHTML += `
+                    <div class="movie-card">
+                        <img src="${IMG_URL + item.poster_path}" loading="lazy">
+                        <a href="movie.html?id=${item.id}&type=${item.title ? 'movie' : 'tv'}" class="watch-btn">شاهد الآن</a>
                     </div>`;
-                }
             });
-            if(filter !== 'الكل') closeNav();
         }
-        filterMovies();
+
+        fetchFromApi('movie/popular');
     </script>
 </body>
 </html>
