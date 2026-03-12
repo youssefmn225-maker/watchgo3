@@ -15,6 +15,8 @@
         .logo-text { font-size: 20px; font-weight: bold; color: var(--text); letter-spacing: 1px; }
         .header-icons { display: flex; align-items: center; gap: 15px; }
         .icon-btn { font-size: 24px; cursor: pointer; color: var(--text); }
+        /* ستايل أيقونة القلب */
+        .heart-icon { font-size: 22px; cursor: pointer; color: var(--primary); }
 
         #searchBox { display: none; padding: 15px; background: #050505; }
         #searchBox input { width: 100%; padding: 12px; border-radius: 25px; border: none; background: #ffffff; color: #000; outline: none; text-align: center; font-weight: bold; }
@@ -52,8 +54,8 @@
             <span class="logo-text">WATCHGO</span>
         </div>
         <div class="header-icons">
-            <a href="list.html?type=favorites" style="color: var(--primary); text-decoration: none; font-size: 22px;">
-                <i class="fa-solid fa-heart"></i>
+            <a href="list.html?type=favorites" style="text-decoration: none;">
+                <i class="fa-solid fa-heart heart-icon"></i>
             </a>
             <i class="fa-solid fa-magnifying-glass icon-btn" onclick="toggleSearch()"></i>
             <i class="fa-solid fa-bars icon-btn" onclick="openNav()"></i>
@@ -126,6 +128,7 @@
         async function displayResults(results) {
             const grid = document.getElementById('movies-grid');
             grid.innerHTML = '';
+            
             for(const item of results) {
                 if(!item.poster_path) continue;
                 let posterSrc = IMG_URL + item.poster_path;
@@ -136,6 +139,7 @@
                         posterSrc = IMG_URL + imgData.posters[0].file_path;
                     }
                 } catch(e) {}
+
                 grid.innerHTML += `
                     <div class="movie-card">
                         <img src="${posterSrc}" loading="lazy">
