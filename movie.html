@@ -41,24 +41,24 @@
         <div class="poster-container">
             <img src="" id="poster" class="poster">
             <div class="poster-meta">
-                <div class="imdb-badge"><i class="fa-solid fa-star"></i> IMDb 4.1</div>
-                <a href="#" class="trailer-btn"><i class="fa-solid fa-tv"></i> مشاهدة التريلر</a>
+                <div class="imdb-badge" id="imdbRate"><i class="fa-solid fa-star"></i> IMDb --</div>
+                <a href="#" id="trailerLink" target="_blank" class="trailer-btn"><i class="fa-solid fa-tv"></i> مشاهدة التريلر</a>
             </div>
         </div>
 
         <div class="info-section">
-            <h1 id="movieTitle">---</h1>
+            <h1 id="movieTitle">جاري التحميل...</h1>
             <div style="color: var(--primary); font-weight:bold; margin-bottom:10px;">قصة الفيلم</div>
-            <p style="color: #ccc; line-height: 1.6;">هذا الفيلم يستكشف القصص المحلية مع الممثلين والمنتجين بشكل احترافي ومثير...</p>
+            <p id="movieOverview" style="color: #ccc; line-height: 1.6;">جاري تحميل تفاصيل القصة...</p>
             
             <div class="details-box">
-                <div class="row"><span>القسم:</span><span>أفلام أجنبي</span></div>
-                <div class="row"><span>النوع:</span><span>رعب</span></div>
+                <div class="row"><span>القسم:</span><span id="detCategory">---</span></div>
+                <div class="row"><span>النوع:</span><span id="detGenre">---</span></div>
                 <div class="row"><span>الجودة:</span><span>1080p WEB-DL</span></div>
-                <div class="row"><span>التوقيت:</span><span>91 دقيقة</span></div>
-                <div class="row"><span>موعد الصدور:</span><span>2026</span></div>
-                <div class="row"><span>اللغة:</span><span>الإنجليزية</span></div>
-                <div class="row"><span>الدولة:</span><span>الولايات المتحدة</span></div>
+                <div class="row"><span>التوقيت:</span><span id="detRuntime">-- دقيقة</span></div>
+                <div class="row"><span>موعد الصدور:</span><span id="detYear">----</span></div>
+                <div class="row"><span>اللغة:</span><span id="detLang">---</span></div>
+                <div class="row"><span>الدولة:</span><span id="detCountry">---</span></div>
             </div>
         </div>
 
@@ -69,19 +69,67 @@
     </div>
 
     <div style="max-width: 1200px; margin: 30px auto 10px; color: var(--primary); font-weight:bold;">أفلام متشابهة</div>
-    <div class="related-grid" style="max-width: 1200px; margin: auto;">
-        <div class="related-item"><img src="https://i.ibb.co/xS9g9zf9/MV5-BNz-Zj-Nj-Rm-ODkt-MDZj-OC00-Mzcw-LWI4-N2-It-YTI5-OWY1-YTI2-ZGZl-Xk-Ey-Xk-Fqc-Gc-449x650.jpg"></div>
-        <div class="related-item"><img src="https://i.ibb.co/TqtRdpKX/zf-KS4-WL0-OZ9udp-No-SYZw91-VB3a-H-scaled-433x650.jpg"></div>
-        <div class="related-item"><img src="https://i.ibb.co/nqNxs4f7/n-Op-JLL-4f-424x650.jpg"></div>
-        <div class="related-item"><img src="https://i.ibb.co/vx3FTWpm/70k-Tz0-Omjj-Ze7z-Hv-IDrq2i-KW7-PJ-scaled-433x650.jpg"></div>
-        <div class="related-item"><img src="https://i.ibb.co/S48J73Ys/MV5-BNWU4-Zj-M3-Mj-Qt-ZTAw-MS00-YTY4-LWJh-Ym-Et-ZTFi-MTAx-Nzc4-OGFj-Xk-Ey-Xk-Fqc-Gc-V1-scaled-433x650.jpg"></div>
-        <div class="related-item"><img src="https://i.ibb.co/TxbY9Q73/g0j-VBv-4f-464x650.jpg"></div>
-    </div>
+    <div class="related-grid" id="relatedGrid" style="max-width: 1200px; margin: auto;">
+        </div>
 
     <script>
+        const API_KEY = 'b838a848a571a893e6b0effe4bd53db8';
+        const IMG_URL = 'https://image.tmdb.org/t/p/w500';
         const params = new URLSearchParams(window.location.search);
-        document.getElementById('movieTitle').innerText = params.get('title');
-        document.getElementById('poster').src = params.get('poster');
+        const movieId = params.get('id');
+        const type = params.get('type') || 'movie';
+
+        async function getMovieDetails() {
+            if(!movieId) return;
+            
+            try {
+                // جلب بيانات الفيلم الأساسية والفيديوهات
+                const response = await fetch(`https://api.themoviedb.org/3/${type}/${movieId}?api_key=${API_KEY}&language=ar-AR&append_to_response=videos`);
+                const movie = await response.json();
+
+                // تحديث العناصر في الصفحة
+                document.getElementById('movieTitle').innerText = movie.title || movie.name;
+                document.getElementById('poster').src = IMG_URL + movie.poster_path;
+                document.getElementById('movieOverview').innerText = movie.overview || "لا يوجد وصف متاح حالياً باللغة العربية.";
+                document.getElementById('imdbRate').innerHTML = `<i class="fa-solid fa-star"></i> IMDb ${movie.vote_average.toFixed(1)}`;
+                
+                // تحديث جدول التفاصيل
+                document.getElementById('detCategory').innerText = type === 'movie' ? 'أفلام' : 'مسلسلات';
+                document.getElementById('detGenre').innerText = movie.genres.map(g => g.name).join(' / ');
+                document.getElementById('detRuntime').innerText = (movie.runtime || movie.episode_run_time?.[0] || '--') + ' دقيقة';
+                document.getElementById('detYear').innerText = (movie.release_date || movie.first_air_date || '').split('-')[0];
+                document.getElementById('detLang').innerText = movie.original_language.toUpperCase();
+                document.getElementById('detCountry').innerText = movie.production_countries?.[0]?.name || 'غير معروف';
+
+                // البحث عن التريلر
+                const trailer = movie.videos.results.find(v => v.type === 'Trailer');
+                if(trailer) {
+                    document.getElementById('trailerLink').href = `https://www.youtube.com/watch?v=${trailer.key}`;
+                }
+
+                getRelated();
+            } catch (error) {
+                console.error("Error fetching data:", error);
+            }
+        }
+
+        async function getRelated() {
+            const response = await fetch(`https://api.themoviedb.org/3/${type}/${movieId}/recommendations?api_key=${API_KEY}&language=ar-AR`);
+            const data = await response.json();
+            const grid = document.getElementById('relatedGrid');
+            grid.innerHTML = '';
+            
+            data.results.slice(0, 6).forEach(item => {
+                grid.innerHTML += `
+                    <div class="related-item">
+                        <a href="movie.html?id=${item.id}&type=${type}">
+                            <img src="${IMG_URL + item.poster_path}">
+                        </a>
+                    </div>`;
+            });
+        }
+
+        getMovieDetails();
     </script>
 </body>
 </html>
