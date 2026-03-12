@@ -32,7 +32,6 @@
         .cast-item img { width: 70px; height: 70px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary); }
         .cast-item div { font-size: 11px; margin-top: 5px; color: #bbb; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-        /* تعديلات شكل المواسم والحلقات */
         .seasons-bar { display: flex; gap: 10px; margin-bottom: 15px; overflow-x: auto; padding-bottom: 10px; }
         .season-btn { background: #1a1a1a; border: 1px solid #444; color: white; padding: 8px 20px; border-radius: 50px; cursor: pointer; transition: 0.3s; white-space: nowrap; }
         .season-btn.active { background: var(--primary); border-color: var(--primary); }
@@ -66,6 +65,17 @@
 <body>
 
     <div id="toast-container"></div> 
+
+    <div id="customModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:9999; justify-content:center; align-items:center;">
+        <div style="background:#121212; padding:25px; border-radius:15px; border:1px solid var(--primary); text-align:center; color:white; width:85%; max-width:320px; box-shadow: 0 0 20px rgba(155, 81, 224, 0.3);">
+            <h3 style="color:var(--primary); margin-top:0;">تم بنجاح</h3>
+            <p id="modalMsg" style="font-size: 15px; margin-bottom: 20px;">هل تود الانتقال لقائمتك؟</p>
+            <div style="display:flex; gap:10px; justify-content:center;">
+                <button id="modalOk" class="btn" style="flex:1;">نعم</button>
+                <button onclick="document.getElementById('customModal').style.display='none'" class="btn" style="flex:1; background:#444;">إلغاء</button>
+            </div>
+        </div>
+    </div>
 
     <div class="movie-layout">
         <div class="poster-container">
@@ -217,11 +227,11 @@
                 list.push({ id: movieId, title: movieData.original_title || movieData.original_name, poster: movieData.poster_path, type: type });
                 localStorage.setItem(listName, JSON.stringify(list));
                 showToast(`تمت الإضافة إلى ${label} بنجاح!`);
-                setTimeout(() => {
-                    if(confirm(`تمت الإضافة! هل تريد الانتقال لصفحة ${label}؟`)) {
-                        window.location.href = `list.html?type=${listName}`;
-                    }
-                }, 1000);
+                
+                const modal = document.getElementById('customModal');
+                document.getElementById('modalMsg').innerText = `تمت الإضافة! هل تود الانتقال لصفحة ${label}؟`;
+                document.getElementById('modalOk').onclick = () => { window.location.href = `list.html?type=${listName}`; };
+                modal.style.display = 'flex';
             } else {
                 showToast(`العمل موجود بالفعل في ${label}`, 'fa-exclamation-circle');
             }
