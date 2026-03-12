@@ -62,7 +62,7 @@
 
     <div id="trailerModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:9999; justify-content:center; align-items:center;">
         <div style="position:relative; width:80%; max-width:800px;">
-            <span onclick="document.getElementById('trailerModal').style.display='none'" style="position:absolute; top:-40px; right:0; color:white; font-size:30px; cursor:pointer;">&times;</span>
+            <span onclick="document.getElementById('trailerModal').style.display='none'; document.getElementById('trailerFrame').src='';" style="position:absolute; top:-40px; right:0; color:white; font-size:30px; cursor:pointer;">&times;</span>
             <iframe id="trailerFrame" width="100%" height="450" src="" frameborder="0" allowfullscreen></iframe>
         </div>
     </div>
@@ -75,31 +75,62 @@
         const type = params.get('type') || 'movie';
 
         async function getMovieDetails() {
-            if(!movieId) return;
-            const res = await fetch(`https://api.themoviedb.org/3/${type}/${movieId}?api_key=${API_KEY}&language=ar-AR&append_to_response=videos`);
-            const movie = await res.json();
-            document.getElementById('movieTitle').innerText = movie.title || movie.name;
-            document.getElementById('poster').src = IMG_URL + movie.poster_path;
-            document.getElementById('movieOverview').innerText = movie.overview;
-            document.getElementById('imdbRate').innerHTML = `<i class="fa-solid fa-star"></i> IMDb ${movie.vote_average.toFixed(1)}`;
-            
-            const trailer = movie.videos.results.find(v => v.type === 'Trailer');
-            if(trailer) {
-                document.getElementById('trailerLink').onclick = () => {
-                    document.getElementById('trailerFrame').src = `https://www.youtube.com/embed/${trailer.key}`;
-                    document.getElementById('trailerModal').style.display = 'flex';
-                };
+            // لو فتحت الصفحة من غير ما تختار فيلم
+            if(!movieId) {
+                document.getElementById('movieTitle').innerText = "خطأ: يرجى اختيار فيلم من الرئيسية";
+                document.getElementById('movieOverview').innerText = "لا يوجد بيانات لعرضها.";
+                return;
             }
-            getRelated();
+
+            try {
+                const res = await fetch(`https://api.themoviedb.org/3/${type}/${movieId}?api_key=${API_KEY}&language=ar-AR&append_to_response=videos`);
+                const movie = await res.json();
+
+                // تعبئة البيانات الأساسية
+                document.getElementById('movieTitle').innerText = movie.title || movie.name;
+                document.getElementById('poster').src = movie.poster_path ? (IMG_URL + movie.poster_path) : '';
+                document.getElementById('movieOverview').innerText = movie.overview || "لا توجد قصة متاحة.";
+                document.getElementById('imdbRate').innerHTML = `<i class="fa-solid fa-star"></i> IMDb ${movie.vote_average ? movie.vote_average.toFixed(1) : '--'}`;
+                
+                // تعبئة جدول التفاصيل (اللي كنت ناسيها)
+                document.getElementById('detCategory').innerText = type === 'movie' ? 'أفلام' : 'مسلسلات';
+                document.getElementById('detGenre').innerText = movie.genres ? movie.genres.map(g => g.name).join(' / ') : '---';
+                document.getElementById('detRuntime').innerText = (movie.runtime || movie.episode_run_time?.[0] || '--') + ' دقيقة';
+                document.getElementById('detYear').innerText = (movie.release_date || movie.first_air_date || '----').split('-')[0];
+                document.getElementById('detLang').innerText = movie.original_language ? movie.original_language.toUpperCase() : '---';
+                document.getElementById('detCountry').innerText = movie.production_countries?.[0]?.name || '---';
+
+                // تشغيل التريلر
+                const trailer = movie.videos?.results?.find(v => v.type === 'Trailer');
+                if(trailer) {
+                    document.getElementById('trailerLink').onclick = () => {
+                        document.getElementById('trailerFrame').src = `https://www.youtube.com/embed/${trailer.key}?autoplay=1`;
+                        document.getElementById('trailerModal').style.display = 'flex';
+                    };
+                } else {
+                    document.getElementById('trailerLink').style.display = 'none'; // يخفي الزرار لو الفيلم ملوش تريلر
+                }
+
+                getRelated();
+            } catch (error) {
+                document.getElementById('movieTitle').innerText = "خطأ في جلب البيانات!";
+            }
         }
+
         async function getRelated() {
-            const res = await fetch(`https://api.themoviedb.org/3/${type}/${movieId}/recommendations?api_key=${API_KEY}&language=ar-AR`);
-            const data = await res.json();
-            const grid = document.getElementById('relatedGrid');
-            data.results.slice(0, 6).forEach(item => {
-                grid.innerHTML += `<div class="related-item"><a href="movie.html?id=${item.id}&type=${type}"><img src="${IMG_URL + item.poster_path}"></a></div>`;
-            });
+            try {
+                const res = await fetch(`https://api.themoviedb.org/3/${type}/${movieId}/recommendations?api_key=${API_KEY}&language=ar-AR`);
+                const data = await res.json();
+                const grid = document.getElementById('relatedGrid');
+                grid.innerHTML = ''; // تفريغ القديم
+                data.results.slice(0, 6).forEach(item => {
+                    if(item.poster_path) {
+                        grid.innerHTML += `<div class="related-item"><a href="movie.html?id=${item.id}&type=${type}"><img src="${IMG_URL + item.poster_path}"></a></div>`;
+                    }
+                });
+            } catch(e) {}
         }
+
         getMovieDetails();
     </script>
 </body>
