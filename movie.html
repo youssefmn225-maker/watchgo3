@@ -18,10 +18,24 @@
         .row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #222; font-size: 14px; }
         .row span:first-child { color: var(--primary); font-weight: bold; }
         .action-panel { display: flex; flex-direction: column; gap: 10px; }
-        .btn { background: var(--primary); color: white; padding: 15px; text-align: center; border-radius: 10px; text-decoration: none; font-weight: bold; }
+        .btn { background: var(--primary); color: white; padding: 15px; text-align: center; border-radius: 10px; text-decoration: none; font-weight: bold; border:none; cursor:pointer; }
         .btn.download { background: #333; border: 1px solid #555; }
+        .btn.list-btn { background: #1a1a1a; font-size: 13px; padding: 10px; }
+        
+        /* قسم الممثلين والحلقات */
+        .cast-scroll { display: flex; gap: 15px; overflow-x: auto; padding-bottom: 10px; margin-top: 15px; }
+        .cast-item { min-width: 100px; text-align: center; }
+        .cast-item img { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary); }
+        .cast-item div { font-size: 12px; margin-top: 5px; color: #ccc; }
+
+        .episodes-container { margin-top: 20px; background: #111; border-radius: 10px; padding: 15px; display: none; }
+        .episode-item { display: flex; align-items: center; gap: 15px; padding: 10px; border-bottom: 1px solid #222; cursor: pointer; }
+        .episode-item:hover { background: #1a1a1a; }
+        .episode-item span { color: var(--primary); font-weight: bold; }
+
         .related-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 15px; margin-top: 30px; }
         .related-item img { width: 100%; height: 200px; object-fit: cover; border-radius: 8px; }
+
         @media (max-width: 768px) { .movie-layout { grid-template-columns: 1fr; } .related-grid { grid-template-columns: repeat(3, 1fr); } }
     </style>
 </head>
@@ -32,7 +46,12 @@
             <img src="" id="poster" class="poster">
             <div class="poster-meta">
                 <div class="imdb-badge" id="imdbRate"><i class="fa-solid fa-star"></i> IMDb --</div>
-                <button id="trailerLink" class="trailer-btn"><i class="fa-solid fa-tv"></i> مشاهدة التريلر</button>
+                <button id="trailerLink" class="trailer-btn"><i class="fa-solid fa-tv"></i> التريلر</button>
+            </div>
+            
+            <div style="margin-top: 15px; display: flex; flex-direction: column; gap: 10px;">
+                <button onclick="saveToList('favorites')" class="btn list-btn"><i class="fa-solid fa-heart"></i> أضف للمفضلة</button>
+                <button onclick="saveToList('watchLater')" class="btn list-btn"><i class="fa-solid fa-clock"></i> مشاهدة لاحقاً</button>
             </div>
         </div>
 
@@ -40,20 +59,28 @@
             <h1 id="movieTitle">جاري التحميل...</h1>
             <div style="color: var(--primary); font-weight:bold; margin-bottom:10px;">قصة الفيلم</div>
             <p id="movieOverview" style="color: #ccc; line-height: 1.6;">...</p>
-            <div class="details-box">
+            
+            <div id="castContainer" class="cast-scroll"></div>
+
+            <div class="details-box" style="margin-top:20px;">
                 <div class="row"><span>القسم:</span><span id="detCategory">---</span></div>
                 <div class="row"><span>النوع:</span><span id="detGenre">---</span></div>
-                <div class="row"><span>الجودة:</span><span>1080p WEB-DL</span></div>
                 <div class="row"><span>التوقيت:</span><span id="detRuntime">-- دقيقة</span></div>
                 <div class="row"><span>موعد الصدور:</span><span id="detYear">----</span></div>
-                <div class="row"><span>اللغة:</span><span id="detLang">---</span></div>
-                <div class="row"><span>الدولة:</span><span id="detCountry">---</span></div>
+            </div>
+
+            <div id="tvSection" class="episodes-container">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                    <span style="color:var(--primary); font-weight:bold;">قائمة الحلقات</span>
+                    <select id="seasonSelect" onchange="loadEpisodes(this.value)" style="background:#222; color:#fff; border:1px solid #444; padding:5px; border-radius:5px;"></select>
+                </div>
+                <div id="episodesList"></div>
             </div>
         </div>
 
         <div class="action-panel">
-            <a href="#" class="btn"><i class="fa-solid fa-play"></i> مشاهدة الآن</a>
-            <a href="#" class="btn download"><i class="fa-solid fa-download"></i> تحميل الآن</a>
+            <button onclick="alert('سيتوفر رابط المشاهدة قريباً!')" class="btn"><i class="fa-solid fa-play"></i> مشاهدة الآن</button>
+            <button onclick="alert('سيتوفر رابط التحميل قريباً!')" class="btn download"><i class="fa-solid fa-download"></i> تحميل الآن</button>
         </div>
     </div>
 
@@ -73,62 +100,95 @@
         const params = new URLSearchParams(window.location.search);
         const movieId = params.get('id');
         const type = params.get('type') || 'movie';
+        let currentMovieData = null;
 
         async function getMovieDetails() {
-            // لو فتحت الصفحة من غير ما تختار فيلم
-            if(!movieId) {
-                document.getElementById('movieTitle').innerText = "خطأ: يرجى اختيار فيلم من الرئيسية";
-                document.getElementById('movieOverview').innerText = "لا يوجد بيانات لعرضها.";
-                return;
-            }
-
+            if(!movieId) return;
             try {
-                const res = await fetch(`https://api.themoviedb.org/3/${type}/${movieId}?api_key=${API_KEY}&language=ar-AR&append_to_response=videos`);
-                const movie = await res.json();
+                const res = await fetch(`https://api.themoviedb.org/3/${type}/${movieId}?api_key=${API_KEY}&language=ar-AR&append_to_response=videos,credits`);
+                currentMovieData = await res.json();
 
-                // تعبئة البيانات الأساسية
-                document.getElementById('movieTitle').innerText = movie.title || movie.name;
-                document.getElementById('poster').src = movie.poster_path ? (IMG_URL + movie.poster_path) : '';
-                document.getElementById('movieOverview').innerText = movie.overview || "لا توجد قصة متاحة.";
-                document.getElementById('imdbRate').innerHTML = `<i class="fa-solid fa-star"></i> IMDb ${movie.vote_average ? movie.vote_average.toFixed(1) : '--'}`;
+                document.getElementById('movieTitle').innerText = currentMovieData.title || currentMovieData.name;
+                document.getElementById('poster').src = IMG_URL + currentMovieData.poster_path;
+                document.getElementById('movieOverview').innerText = currentMovieData.overview;
+                document.getElementById('imdbRate').innerHTML = `<i class="fa-solid fa-star"></i> IMDb ${currentMovieData.vote_average.toFixed(1)}`;
                 
-                // تعبئة جدول التفاصيل (اللي كنت ناسيها)
                 document.getElementById('detCategory').innerText = type === 'movie' ? 'أفلام' : 'مسلسلات';
-                document.getElementById('detGenre').innerText = movie.genres ? movie.genres.map(g => g.name).join(' / ') : '---';
-                document.getElementById('detRuntime').innerText = (movie.runtime || movie.episode_run_time?.[0] || '--') + ' دقيقة';
-                document.getElementById('detYear').innerText = (movie.release_date || movie.first_air_date || '----').split('-')[0];
-                document.getElementById('detLang').innerText = movie.original_language ? movie.original_language.toUpperCase() : '---';
-                document.getElementById('detCountry').innerText = movie.production_countries?.[0]?.name || '---';
+                document.getElementById('detGenre').innerText = currentMovieData.genres.map(g => g.name).join(' / ');
+                document.getElementById('detRuntime').innerText = (currentMovieData.runtime || (currentMovieData.episode_run_time ? currentMovieData.episode_run_time[0] : '--')) + ' دقيقة';
+                document.getElementById('detYear').innerText = (currentMovieData.release_date || currentMovieData.first_air_date || '').split('-')[0];
 
-                // تشغيل التريلر
-                const trailer = movie.videos?.results?.find(v => v.type === 'Trailer');
+                // الممثلين
+                const castContainer = document.getElementById('castContainer');
+                currentMovieData.credits.cast.slice(0, 10).forEach(actor => {
+                    if(actor.profile_path) {
+                        castContainer.innerHTML += `<div class="cast-item"><img src="${IMG_URL + actor.profile_path}"><div>${actor.name}</div></div>`;
+                    }
+                });
+
+                // لو مسلسل، حمل المواسم
+                if(type === 'tv') {
+                    document.getElementById('tvSection').style.display = 'block';
+                    const select = document.getElementById('seasonSelect');
+                    currentMovieData.seasons.forEach(s => {
+                        if(s.season_number > 0) {
+                            select.innerHTML += `<option value="${s.season_number}">الموسم ${s.season_number}</option>`;
+                        }
+                    });
+                    loadEpisodes(1);
+                }
+
+                // التريلر
+                const trailer = currentMovieData.videos.results.find(v => v.type === 'Trailer');
                 if(trailer) {
                     document.getElementById('trailerLink').onclick = () => {
                         document.getElementById('trailerFrame').src = `https://www.youtube.com/embed/${trailer.key}?autoplay=1`;
                         document.getElementById('trailerModal').style.display = 'flex';
                     };
-                } else {
-                    document.getElementById('trailerLink').style.display = 'none'; // يخفي الزرار لو الفيلم ملوش تريلر
                 }
 
                 getRelated();
-            } catch (error) {
-                document.getElementById('movieTitle').innerText = "خطأ في جلب البيانات!";
+            } catch (e) { console.error(e); }
+        }
+
+        async function loadEpisodes(seasonNum) {
+            const res = await fetch(`https://api.themoviedb.org/3/tv/${movieId}/season/${seasonNum}?api_key=${API_KEY}&language=ar-AR`);
+            const data = await res.json();
+            const list = document.getElementById('episodesList');
+            list.innerHTML = '';
+            data.episodes.forEach(ep => {
+                list.innerHTML += `
+                    <div class="episode-item" onclick="alert('سيتم توفير الحلقة قريباً')">
+                        <span>الحلقة ${ep.episode_number}:</span>
+                        <div style="font-size:14px;">${ep.name || 'بدون عنوان'}</div>
+                    </div>`;
+            });
+        }
+
+        function saveToList(listName) {
+            if(!currentMovieData) return;
+            let list = JSON.parse(localStorage.getItem(listName) || "[]");
+            if(!list.find(m => m.id === currentMovieData.id)) {
+                list.push({
+                    id: currentMovieData.id,
+                    title: currentMovieData.title || currentMovieData.name,
+                    poster: currentMovieData.poster_path,
+                    type: type
+                });
+                localStorage.setItem(listName, JSON.stringify(list));
+                alert("تمت الإضافة للقائمة!");
+            } else {
+                alert("موجود بالفعل في قائمتك.");
             }
         }
 
         async function getRelated() {
-            try {
-                const res = await fetch(`https://api.themoviedb.org/3/${type}/${movieId}/recommendations?api_key=${API_KEY}&language=ar-AR`);
-                const data = await res.json();
-                const grid = document.getElementById('relatedGrid');
-                grid.innerHTML = ''; // تفريغ القديم
-                data.results.slice(0, 6).forEach(item => {
-                    if(item.poster_path) {
-                        grid.innerHTML += `<div class="related-item"><a href="movie.html?id=${item.id}&type=${type}"><img src="${IMG_URL + item.poster_path}"></a></div>`;
-                    }
-                });
-            } catch(e) {}
+            const res = await fetch(`https://api.themoviedb.org/3/${type}/${movieId}/recommendations?api_key=${API_KEY}&language=ar-AR`);
+            const data = await res.json();
+            const grid = document.getElementById('relatedGrid');
+            data.results.slice(0, 6).forEach(item => {
+                grid.innerHTML += `<div class="related-item"><a href="movie.html?id=${item.id}&type=${type}"><img src="${IMG_URL + item.poster_path}"></a></div>`;
+            });
         }
 
         getMovieDetails();
