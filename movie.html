@@ -77,7 +77,7 @@
             
             <div style="margin-top: 15px; display: flex; flex-direction: column; gap: 8px; width: 100%; max-width: 280px;">
                 <button onclick="saveToList('favorites')" class="btn list-btn"><i class="fa-solid fa-heart"></i> أضف للمفضلة</button>
-                <button onclick="saveToList('watchLater')" class="btn list-btn"><i class="fa-solid fa-clock"></i> مشاهدة لاحقاً</button>
+                <button onclick="saveToList('watchLater')" class="btn list-btn"><i class="fa-solid fa-clock"></i> المشاهدة لاحقاً</button>
             </div>
         </div>
 
@@ -141,12 +141,19 @@
 
         async function getMovieDetails() {
             if(!movieId) return;
-            const res = await fetch(`https://api.themoviedb.org/3/${type}/${movieId}?api_key=${API_KEY}&language=ar-AR&append_to_response=videos,credits`);
+            
+            // لقد قمنا بتعديل هذا السطر ليطلب البوسترات الإنجليزية بشكل خاص
+            const res = await fetch(`https://api.themoviedb.org/3/${type}/${movieId}?api_key=${API_KEY}&language=ar-AR&append_to_response=videos,credits,images&include_image_language=en,null`);
             movieData = await res.json();
             
-            // تحديث العنوان ليظهر الاسم الأصلي (الأجنبي)
+            // تحديث العنوان ليظهر الاسم الأصلي (الأجنبي) المكتوب كـ Text
             document.getElementById('movieTitle').innerText = movieData.original_title || movieData.original_name;
-            document.getElementById('poster').src = IMG_URL + movieData.poster_path;
+            
+            // التعديل هنا: محاولة إيجاد البوستر الإنجليزي أولاً من قائمة الصور المجلوبة
+            const englishPoster = movieData.images?.posters?.find(p => p.iso_639_1 === 'en');
+            const posterPath = englishPoster ? englishPoster.file_path : movieData.poster_path;
+            document.getElementById('poster').src = IMG_URL + posterPath;
+            
             document.getElementById('movieOverview').innerText = movieData.overview;
             document.getElementById('imdbRate').innerHTML = `<i class="fa-solid fa-star"></i> ${movieData.vote_average.toFixed(1)}`;
             
@@ -201,7 +208,6 @@
             const data = await res.json();
             const list = document.getElementById('episodesList');
             list.innerHTML = '';
-            // إخفاء أسماء الحلقات كما طلبت
             data.episodes.forEach(ep => {
                 list.innerHTML += `<div class="episode-card" onclick="showToast('الحلقة ستتوفر قريباً', 'fa-clock')"><span>الحلقة ${ep.episode_number}</span><i class="fa-solid fa-play"></i></div>`;
             });
