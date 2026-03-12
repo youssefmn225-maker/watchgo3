@@ -6,7 +6,6 @@
     <title>WatchGo - عالم السينما</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        /* كودك الأصلي بدون أي مساس */
         :root { --primary: #9b51e0; --bg: #050505; --card-bg: #121212; --text: #ffffff; }
         body { background: var(--bg); color: var(--text); font-family: sans-serif; margin: 0; }
         
@@ -110,7 +109,9 @@
         async function fetchFromApi(endpoint, genreId = '', lang = 'ar-AR') {
             const grid = document.getElementById('movies-grid');
             grid.innerHTML = '<p style="color:white; padding:20px;">جاري تحميل المحتوى...</p>';
-            let url = `${BASE_URL}/${endpoint}?api_key=${API_KEY}&language=${lang}`;
+            
+            // إضافة append_to_response=images لجلب صور إضافية والبحث عن الإنجليزي منها
+            let url = `${BASE_URL}/${endpoint}?api_key=${API_KEY}&language=${lang}&append_to_response=images&include_image_language=en,null`;
             if(genreId) url += `&with_genres=${genreId}`;
 
             try {
@@ -121,26 +122,29 @@
             closeNav();
         }
 
-        async function searchFromApi(query) {
-            if(!query) return;
-            const url = `${BASE_URL}/search/multi?api_key=${API_KEY}&language=ar-AR&query=${query}`;
-            const response = await fetch(url);
-            const data = await response.json();
-            displayResults(data.results);
-        }
-
-        function displayResults(results) {
+        async function displayResults(results) {
             const grid = document.getElementById('movies-grid');
             grid.innerHTML = '';
-            results.forEach(item => {
-                if(!item.poster_path) return;
-                const title = item.title || item.name;
+            
+            for(const item of results) {
+                if(!item.poster_path) continue;
+                
+                // جلب الصور الخاصة بالفيلم للبحث عن بوستر بالإنجليزية
+                let posterSrc = IMG_URL + item.poster_path;
+                try {
+                    const imgRes = await fetch(`${BASE_URL}/${item.title ? 'movie' : 'tv'}/${item.id}/images?api_key=${API_KEY}&include_image_language=en`);
+                    const imgData = await imgRes.json();
+                    if(imgData.posters && imgData.posters.length > 0) {
+                        posterSrc = IMG_URL + imgData.posters[0].file_path;
+                    }
+                } catch(e) {}
+
                 grid.innerHTML += `
                     <div class="movie-card">
-                        <img src="${IMG_URL + item.poster_path}" loading="lazy">
+                        <img src="${posterSrc}" loading="lazy">
                         <a href="movie.html?id=${item.id}&type=${item.title ? 'movie' : 'tv'}" class="watch-btn">شاهد الآن</a>
                     </div>`;
-            });
+            }
         }
 
         fetchFromApi('movie/popular');
