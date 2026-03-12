@@ -41,27 +41,31 @@
         .related-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 15px; margin-top: 20px; }
         .related-item img { width: 100%; height: 220px; object-fit: cover; border-radius: 10px; border: 1px solid #222; }
 
+        /* نظام التنبيهات (Toast) */
+        #toast-container { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 10000; display: flex; flex-direction: column; gap: 10px; }
+        .toast { background: #1a1a1a; color: white; padding: 12px 25px; border-radius: 50px; border: 1px solid var(--primary); box-shadow: 0 5px 15px rgba(0,0,0,0.5); font-size: 14px; font-weight: bold; display: flex; align-items: center; gap: 10px; animation: slideUp 0.4s ease forwards, fadeOut 0.4s ease 2.5s forwards; }
+        .toast i { color: var(--primary); }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeOut { to { opacity: 0; transform: translateY(-20px); visibility: hidden; } }
+
         /* تعديلات الموبايل القوية */
         @media (max-width: 768px) {
             body { padding: 15px; }
             .movie-layout { display: flex; flex-direction: column; gap: 20px; }
             .poster-container { display: flex; flex-direction: column; align-items: center; }
-            .poster { max-width: 280px; } /* منع البوستر من التضخم */
+            .poster { max-width: 280px; }
             .info-section h1 { text-align: center; font-size: 26px; }
-            .info-section { text-align: justify; }
-            .action-panel { order: -1; } /* وضع الأزرار فوق القصة للموبايل */
+            .action-panel { order: -1; }
             .related-grid { grid-template-columns: repeat(3, 1fr); }
-            .cast-item img { width: 60px; height: 60px; }
         }
 
-        /* نافذة التريلر */
         #trailerModal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:9999; justify-content:center; align-items:center; }
         .modal-content { position:relative; width:90%; max-width:800px; }
     </style>
 </head>
 <body>
 
-    <div class="movie-layout">
+    <div id="toast-container"></div> <div class="movie-layout">
         <div class="poster-container">
             <img src="" id="poster" class="poster">
             <div class="poster-meta">
@@ -100,13 +104,10 @@
         </div>
 
         <div class="action-panel">
-            <button onclick="alert('سيرفرات المشاهدة تحت الصيانة حالياً')" class="btn"><i class="fa-solid fa-play"></i> مشاهدة الآن</button>
-            <button onclick="alert('سيرفرات التحميل تحت الصيانة حالياً')" class="btn download"><i class="fa-solid fa-download"></i> تحميل الآن</button>
+            <button onclick="showToast('رابط المشاهدة سيتوفر قريباً', 'fa-info-circle')" class="btn"><i class="fa-solid fa-play"></i> مشاهدة الآن</button>
+            <button onclick="showToast('رابط التحميل سيتوفر قريباً', 'fa-info-circle')" class="btn download"><i class="fa-solid fa-download"></i> تحميل الآن</button>
         </div>
     </div>
-
-    <div style="max-width: 1200px; margin: 40px auto 10px; color: var(--primary); font-weight:bold; padding:0 10px;">أفلام ومسلسلات مشابهة</div>
-    <div class="related-grid" id="relatedGrid" style="max-width: 1200px; margin: auto; padding:0 10px;"></div>
 
     <div id="trailerModal">
         <div class="modal-content">
@@ -123,51 +124,50 @@
         const type = params.get('type') || 'movie';
         let movieData = null;
 
+        function showToast(message, icon = 'fa-check-circle') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.innerHTML = `<i class="fa-solid ${icon}"></i> ${message}`;
+            container.appendChild(toast);
+            setTimeout(() => { toast.remove(); }, 3000);
+        }
+
         async function getMovieDetails() {
             if(!movieId) return;
-            try {
-                const res = await fetch(`https://api.themoviedb.org/3/${type}/${movieId}?api_key=${API_KEY}&language=ar-AR&append_to_response=videos,credits`);
-                movieData = await res.json();
+            const res = await fetch(`https://api.themoviedb.org/3/${type}/${movieId}?api_key=${API_KEY}&language=ar-AR&append_to_response=videos,credits`);
+            movieData = await res.json();
+            document.getElementById('movieTitle').innerText = movieData.title || movieData.name;
+            document.getElementById('poster').src = IMG_URL + movieData.poster_path;
+            document.getElementById('movieOverview').innerText = movieData.overview;
+            document.getElementById('imdbRate').innerHTML = `<i class="fa-solid fa-star"></i> ${movieData.vote_average.toFixed(1)}`;
+            
+            document.getElementById('detCategory').innerText = type === 'movie' ? 'أفلام' : 'مسلسلات';
+            document.getElementById('detGenre').innerText = movieData.genres.map(g => g.name).join(' / ');
+            document.getElementById('detRuntime').innerText = (movieData.runtime || (movieData.episode_run_time ? movieData.episode_run_time[0] : '--')) + ' دقيقة';
+            document.getElementById('detYear').innerText = (movieData.release_date || movieData.first_air_date || '').split('-')[0];
 
-                document.getElementById('movieTitle').innerText = movieData.title || movieData.name;
-                document.getElementById('poster').src = IMG_URL + movieData.poster_path;
-                document.getElementById('movieOverview').innerText = movieData.overview || "لا يوجد وصف متاح لهذا العمل.";
-                document.getElementById('imdbRate').innerHTML = `<i class="fa-solid fa-star"></i> ${movieData.vote_average.toFixed(1)}`;
-                
-                document.getElementById('detCategory').innerText = type === 'movie' ? 'أفلام' : 'مسلسلات';
-                document.getElementById('detGenre').innerText = movieData.genres.map(g => g.name).join(' / ');
-                document.getElementById('detRuntime').innerText = (movieData.runtime || (movieData.episode_run_time ? movieData.episode_run_time[0] : '--')) + ' دقيقة';
-                document.getElementById('detYear').innerText = (movieData.release_date || movieData.first_air_date || '').split('-')[0];
-
-                // الممثلين
-                const castContainer = document.getElementById('castContainer');
-                movieData.credits.cast.slice(0, 12).forEach(actor => {
-                    if(actor.profile_path) {
-                        castContainer.innerHTML += `<div class="cast-item"><img src="${IMG_URL + actor.profile_path}"><div>${actor.name}</div></div>`;
-                    }
-                });
-
-                // نظام المسلسلات
-                if(type === 'tv') {
-                    document.getElementById('tvSection').style.display = 'block';
-                    const select = document.getElementById('seasonSelect');
-                    movieData.seasons.forEach(s => {
-                        if(s.season_number > 0) select.innerHTML += `<option value="${s.season_number}">الموسم ${s.season_number}</option>`;
-                    });
-                    loadEpisodes(1);
+            const castContainer = document.getElementById('castContainer');
+            movieData.credits.cast.slice(0, 12).forEach(actor => {
+                if(actor.profile_path) {
+                    castContainer.innerHTML += `<div class="cast-item"><img src="${IMG_URL + actor.profile_path}"><div>${actor.name}</div></div>`;
                 }
+            });
 
-                // التريلر
-                const trailer = movieData.videos.results.find(v => v.type === 'Trailer');
-                if(trailer) {
-                    document.getElementById('trailerLink').onclick = () => {
-                        document.getElementById('trailerFrame').src = `https://www.youtube.com/embed/${trailer.key}?autoplay=1`;
-                        document.getElementById('trailerModal').style.display = 'flex';
-                    };
-                }
+            if(type === 'tv') {
+                document.getElementById('tvSection').style.display = 'block';
+                const select = document.getElementById('seasonSelect');
+                movieData.seasons.forEach(s => { if(s.season_number > 0) select.innerHTML += `<option value="${s.season_number}">الموسم ${s.season_number}</option>`; });
+                loadEpisodes(1);
+            }
 
-                getRelated();
-            } catch (e) { console.error("Error loading data:", e); }
+            const trailer = movieData.videos.results.find(v => v.type === 'Trailer');
+            if(trailer) {
+                document.getElementById('trailerLink').onclick = () => {
+                    document.getElementById('trailerFrame').src = `https://www.youtube.com/embed/${trailer.key}?autoplay=1`;
+                    document.getElementById('trailerModal').style.display = 'flex';
+                };
+            }
         }
 
         async function loadEpisodes(seasonNum) {
@@ -176,34 +176,23 @@
             const list = document.getElementById('episodesList');
             list.innerHTML = '';
             data.episodes.forEach(ep => {
-                list.innerHTML += `<div class="episode-item" onclick="alert('جاري تجهيز سيرفرات المشاهدة')"><span>الحلقة ${ep.episode_number}:</span><div>${ep.name}</div></div>`;
+                list.innerHTML += `<div class="episode-item" onclick="showToast('الحلقة ستتوفر قريباً', 'fa-clock')"><span>الحلقة ${ep.episode_number}:</span><div>${ep.name}</div></div>`;
             });
         }
 
         function saveToList(listName) {
             let list = JSON.parse(localStorage.getItem(listName) || "[]");
+            const label = listName === 'favorites' ? 'المفضلة' : 'المشاهدة لاحقاً';
             if(!list.find(m => m.id == movieId)) {
                 list.push({ id: movieId, title: movieData.title || movieData.name, poster: movieData.poster_path, type: type });
                 localStorage.setItem(listName, JSON.stringify(list));
-                alert("تمت الإضافة بنجاح!");
+                showToast(`تمت الإضافة إلى ${label} بنجاح!`);
             } else {
-                alert("العمل مضاف بالفعل.");
+                showToast(`العمل موجود بالفعل في ${label}`, 'fa-exclamation-circle');
             }
         }
 
-        function closeTrailer() {
-            document.getElementById('trailerModal').style.display = 'none';
-            document.getElementById('trailerFrame').src = '';
-        }
-
-        async function getRelated() {
-            const res = await fetch(`https://api.themoviedb.org/3/${type}/${movieId}/recommendations?api_key=${API_KEY}&language=ar-AR`);
-            const data = await res.json();
-            const grid = document.getElementById('relatedGrid');
-            data.results.slice(0, 6).forEach(item => {
-                if(item.poster_path) grid.innerHTML += `<div class="related-item"><a href="movie.html?id=${item.id}&type=${type}"><img src="${IMG_URL + item.poster_path}"></a></div>`;
-            });
-        }
+        function closeTrailer() { document.getElementById('trailerModal').style.display = 'none'; document.getElementById('trailerFrame').src = ''; }
 
         getMovieDetails();
     </script>
