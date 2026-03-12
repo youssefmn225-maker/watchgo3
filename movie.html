@@ -7,36 +7,56 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root { --primary: #9b51e0; --bg: #050505; --text: #ffffff; --imdb-gold: #f5c518; }
-        body { background: var(--bg); color: var(--text); font-family: sans-serif; margin: 0; padding: 20px; }
-        .movie-layout { display: grid; grid-template-columns: 300px 1fr 250px; gap: 20px; max-width: 1200px; margin: auto; }
-        .poster { width: 100%; border-radius: 12px; border: 2px solid #333; }
-        .poster-meta { display: flex; gap: 10px; margin-top: 10px; }
-        .imdb-badge { background: var(--imdb-gold); color: #000; padding: 5px 12px; border-radius: 5px; font-weight: bold; font-size: 16px; }
-        .trailer-btn { background: #222; border: 1px solid #444; padding: 5px 12px; border-radius: 5px; color: #fff; text-decoration: none; font-size: 14px; cursor: pointer; }
-        .info-section h1 { color: var(--primary); margin-top: 0; }
-        .details-box { background: #111; padding: 15px; border-radius: 12px; border: 1px solid #222; }
-        .row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #222; font-size: 14px; }
-        .row span:first-child { color: var(--primary); font-weight: bold; }
-        .action-panel { display: flex; flex-direction: column; gap: 10px; }
-        .btn { background: var(--primary); color: white; padding: 15px; text-align: center; border-radius: 10px; text-decoration: none; font-weight: bold; border:none; cursor:pointer; }
-        .btn.download { background: #333; border: 1px solid #555; }
-        .btn.list-btn { background: #1a1a1a; font-size: 13px; padding: 10px; }
+        body { background: var(--bg); color: var(--text); font-family: sans-serif; margin: 0; padding: 20px; line-height: 1.6; }
         
-        /* قسم الممثلين والحلقات */
-        .cast-scroll { display: flex; gap: 15px; overflow-x: auto; padding-bottom: 10px; margin-top: 15px; }
-        .cast-item { min-width: 100px; text-align: center; }
-        .cast-item img { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary); }
-        .cast-item div { font-size: 12px; margin-top: 5px; color: #ccc; }
+        /* التنسيق الأساسي (الديسكتوب) */
+        .movie-layout { display: grid; grid-template-columns: 300px 1fr 250px; gap: 25px; max-width: 1200px; margin: auto; }
+        .poster { width: 100%; border-radius: 12px; border: 2px solid #222; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .poster-meta { display: flex; gap: 10px; margin-top: 10px; justify-content: center; }
+        .imdb-badge { background: var(--imdb-gold); color: #000; padding: 5px 12px; border-radius: 5px; font-weight: bold; font-size: 14px; }
+        .trailer-btn { background: #222; border: 1px solid #444; padding: 5px 12px; border-radius: 5px; color: #fff; cursor: pointer; font-size: 13px; }
+        
+        .info-section h1 { color: var(--primary); margin-top: 0; font-size: 32px; }
+        .details-box { background: #111; padding: 15px; border-radius: 12px; border: 1px solid #222; margin-top: 20px; }
+        .row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #222; font-size: 14px; }
+        .row:last-child { border-bottom: none; }
+        .row span:first-child { color: var(--primary); font-weight: bold; }
 
-        .episodes-container { margin-top: 20px; background: #111; border-radius: 10px; padding: 15px; display: none; }
-        .episode-item { display: flex; align-items: center; gap: 15px; padding: 10px; border-bottom: 1px solid #222; cursor: pointer; }
-        .episode-item:hover { background: #1a1a1a; }
+        .action-panel { display: flex; flex-direction: column; gap: 12px; }
+        .btn { background: var(--primary); color: white; padding: 15px; text-align: center; border-radius: 10px; text-decoration: none; font-weight: bold; border: none; cursor: pointer; transition: 0.3s; }
+        .btn:hover { opacity: 0.8; transform: translateY(-2px); }
+        .btn.download { background: #222; border: 1px solid #444; }
+        .btn.list-btn { background: #151515; font-size: 13px; padding: 10px; border: 1px solid #333; }
+
+        .cast-scroll { display: flex; gap: 15px; overflow-x: auto; padding: 15px 0; margin-top: 10px; scrollbar-width: none; }
+        .cast-item { min-width: 90px; text-align: center; }
+        .cast-item img { width: 70px; height: 70px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary); }
+        .cast-item div { font-size: 11px; margin-top: 5px; color: #bbb; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+        .episodes-container { margin-top: 20px; background: #111; border-radius: 12px; padding: 15px; display: none; border: 1px solid #222; }
+        .episode-item { display: flex; align-items: center; gap: 10px; padding: 12px; border-bottom: 1px solid #222; cursor: pointer; }
+        .episode-item:last-child { border-bottom: none; }
         .episode-item span { color: var(--primary); font-weight: bold; }
 
-        .related-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 15px; margin-top: 30px; }
-        .related-item img { width: 100%; height: 200px; object-fit: cover; border-radius: 8px; }
+        .related-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 15px; margin-top: 20px; }
+        .related-item img { width: 100%; height: 220px; object-fit: cover; border-radius: 10px; border: 1px solid #222; }
 
-        @media (max-width: 768px) { .movie-layout { grid-template-columns: 1fr; } .related-grid { grid-template-columns: repeat(3, 1fr); } }
+        /* تعديلات الموبايل القوية */
+        @media (max-width: 768px) {
+            body { padding: 15px; }
+            .movie-layout { display: flex; flex-direction: column; gap: 20px; }
+            .poster-container { display: flex; flex-direction: column; align-items: center; }
+            .poster { max-width: 280px; } /* منع البوستر من التضخم */
+            .info-section h1 { text-align: center; font-size: 26px; }
+            .info-section { text-align: justify; }
+            .action-panel { order: -1; } /* وضع الأزرار فوق القصة للموبايل */
+            .related-grid { grid-template-columns: repeat(3, 1fr); }
+            .cast-item img { width: 60px; height: 60px; }
+        }
+
+        /* نافذة التريلر */
+        #trailerModal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:9999; justify-content:center; align-items:center; }
+        .modal-content { position:relative; width:90%; max-width:800px; }
     </style>
 </head>
 <body>
@@ -45,11 +65,11 @@
         <div class="poster-container">
             <img src="" id="poster" class="poster">
             <div class="poster-meta">
-                <div class="imdb-badge" id="imdbRate"><i class="fa-solid fa-star"></i> IMDb --</div>
-                <button id="trailerLink" class="trailer-btn"><i class="fa-solid fa-tv"></i> التريلر</button>
+                <div class="imdb-badge" id="imdbRate"><i class="fa-solid fa-star"></i> --</div>
+                <button id="trailerLink" class="trailer-btn"><i class="fa-solid fa-play"></i> التريلر</button>
             </div>
             
-            <div style="margin-top: 15px; display: flex; flex-direction: column; gap: 10px;">
+            <div style="margin-top: 15px; display: flex; flex-direction: column; gap: 8px; width: 100%; max-width: 280px;">
                 <button onclick="saveToList('favorites')" class="btn list-btn"><i class="fa-solid fa-heart"></i> أضف للمفضلة</button>
                 <button onclick="saveToList('watchLater')" class="btn list-btn"><i class="fa-solid fa-clock"></i> مشاهدة لاحقاً</button>
             </div>
@@ -57,12 +77,13 @@
 
         <div class="info-section">
             <h1 id="movieTitle">جاري التحميل...</h1>
-            <div style="color: var(--primary); font-weight:bold; margin-bottom:10px;">قصة الفيلم</div>
-            <p id="movieOverview" style="color: #ccc; line-height: 1.6;">...</p>
+            <div style="color: var(--primary); font-weight:bold; margin-bottom:5px;">قصة الفيلم</div>
+            <p id="movieOverview" style="color: #ccc; font-size: 15px;">...</p>
             
+            <div style="color: var(--primary); font-weight:bold; margin-top:15px;">طاقم العمل</div>
             <div id="castContainer" class="cast-scroll"></div>
 
-            <div class="details-box" style="margin-top:20px;">
+            <div class="details-box">
                 <div class="row"><span>القسم:</span><span id="detCategory">---</span></div>
                 <div class="row"><span>النوع:</span><span id="detGenre">---</span></div>
                 <div class="row"><span>التوقيت:</span><span id="detRuntime">-- دقيقة</span></div>
@@ -71,7 +92,7 @@
 
             <div id="tvSection" class="episodes-container">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-                    <span style="color:var(--primary); font-weight:bold;">قائمة الحلقات</span>
+                    <span style="color:var(--primary); font-weight:bold;">الحلقات</span>
                     <select id="seasonSelect" onchange="loadEpisodes(this.value)" style="background:#222; color:#fff; border:1px solid #444; padding:5px; border-radius:5px;"></select>
                 </div>
                 <div id="episodesList"></div>
@@ -79,17 +100,17 @@
         </div>
 
         <div class="action-panel">
-            <button onclick="alert('سيتوفر رابط المشاهدة قريباً!')" class="btn"><i class="fa-solid fa-play"></i> مشاهدة الآن</button>
-            <button onclick="alert('سيتوفر رابط التحميل قريباً!')" class="btn download"><i class="fa-solid fa-download"></i> تحميل الآن</button>
+            <button onclick="alert('سيرفرات المشاهدة تحت الصيانة حالياً')" class="btn"><i class="fa-solid fa-play"></i> مشاهدة الآن</button>
+            <button onclick="alert('سيرفرات التحميل تحت الصيانة حالياً')" class="btn download"><i class="fa-solid fa-download"></i> تحميل الآن</button>
         </div>
     </div>
 
-    <div style="max-width: 1200px; margin: 30px auto 10px; color: var(--primary); font-weight:bold;">أفلام متشابهة</div>
-    <div class="related-grid" id="relatedGrid" style="max-width: 1200px; margin: auto;"></div>
+    <div style="max-width: 1200px; margin: 40px auto 10px; color: var(--primary); font-weight:bold; padding:0 10px;">أفلام ومسلسلات مشابهة</div>
+    <div class="related-grid" id="relatedGrid" style="max-width: 1200px; margin: auto; padding:0 10px;"></div>
 
-    <div id="trailerModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:9999; justify-content:center; align-items:center;">
-        <div style="position:relative; width:80%; max-width:800px;">
-            <span onclick="document.getElementById('trailerModal').style.display='none'; document.getElementById('trailerFrame').src='';" style="position:absolute; top:-40px; right:0; color:white; font-size:30px; cursor:pointer;">&times;</span>
+    <div id="trailerModal">
+        <div class="modal-content">
+            <span onclick="closeTrailer()" style="position:absolute; top:-40px; right:0; color:white; font-size:35px; cursor:pointer;">&times;</span>
             <iframe id="trailerFrame" width="100%" height="450" src="" frameborder="0" allowfullscreen></iframe>
         </div>
     </div>
@@ -100,46 +121,44 @@
         const params = new URLSearchParams(window.location.search);
         const movieId = params.get('id');
         const type = params.get('type') || 'movie';
-        let currentMovieData = null;
+        let movieData = null;
 
         async function getMovieDetails() {
             if(!movieId) return;
             try {
                 const res = await fetch(`https://api.themoviedb.org/3/${type}/${movieId}?api_key=${API_KEY}&language=ar-AR&append_to_response=videos,credits`);
-                currentMovieData = await res.json();
+                movieData = await res.json();
 
-                document.getElementById('movieTitle').innerText = currentMovieData.title || currentMovieData.name;
-                document.getElementById('poster').src = IMG_URL + currentMovieData.poster_path;
-                document.getElementById('movieOverview').innerText = currentMovieData.overview;
-                document.getElementById('imdbRate').innerHTML = `<i class="fa-solid fa-star"></i> IMDb ${currentMovieData.vote_average.toFixed(1)}`;
+                document.getElementById('movieTitle').innerText = movieData.title || movieData.name;
+                document.getElementById('poster').src = IMG_URL + movieData.poster_path;
+                document.getElementById('movieOverview').innerText = movieData.overview || "لا يوجد وصف متاح لهذا العمل.";
+                document.getElementById('imdbRate').innerHTML = `<i class="fa-solid fa-star"></i> ${movieData.vote_average.toFixed(1)}`;
                 
                 document.getElementById('detCategory').innerText = type === 'movie' ? 'أفلام' : 'مسلسلات';
-                document.getElementById('detGenre').innerText = currentMovieData.genres.map(g => g.name).join(' / ');
-                document.getElementById('detRuntime').innerText = (currentMovieData.runtime || (currentMovieData.episode_run_time ? currentMovieData.episode_run_time[0] : '--')) + ' دقيقة';
-                document.getElementById('detYear').innerText = (currentMovieData.release_date || currentMovieData.first_air_date || '').split('-')[0];
+                document.getElementById('detGenre').innerText = movieData.genres.map(g => g.name).join(' / ');
+                document.getElementById('detRuntime').innerText = (movieData.runtime || (movieData.episode_run_time ? movieData.episode_run_time[0] : '--')) + ' دقيقة';
+                document.getElementById('detYear').innerText = (movieData.release_date || movieData.first_air_date || '').split('-')[0];
 
                 // الممثلين
                 const castContainer = document.getElementById('castContainer');
-                currentMovieData.credits.cast.slice(0, 10).forEach(actor => {
+                movieData.credits.cast.slice(0, 12).forEach(actor => {
                     if(actor.profile_path) {
                         castContainer.innerHTML += `<div class="cast-item"><img src="${IMG_URL + actor.profile_path}"><div>${actor.name}</div></div>`;
                     }
                 });
 
-                // لو مسلسل، حمل المواسم
+                // نظام المسلسلات
                 if(type === 'tv') {
                     document.getElementById('tvSection').style.display = 'block';
                     const select = document.getElementById('seasonSelect');
-                    currentMovieData.seasons.forEach(s => {
-                        if(s.season_number > 0) {
-                            select.innerHTML += `<option value="${s.season_number}">الموسم ${s.season_number}</option>`;
-                        }
+                    movieData.seasons.forEach(s => {
+                        if(s.season_number > 0) select.innerHTML += `<option value="${s.season_number}">الموسم ${s.season_number}</option>`;
                     });
                     loadEpisodes(1);
                 }
 
                 // التريلر
-                const trailer = currentMovieData.videos.results.find(v => v.type === 'Trailer');
+                const trailer = movieData.videos.results.find(v => v.type === 'Trailer');
                 if(trailer) {
                     document.getElementById('trailerLink').onclick = () => {
                         document.getElementById('trailerFrame').src = `https://www.youtube.com/embed/${trailer.key}?autoplay=1`;
@@ -148,7 +167,7 @@
                 }
 
                 getRelated();
-            } catch (e) { console.error(e); }
+            } catch (e) { console.error("Error loading data:", e); }
         }
 
         async function loadEpisodes(seasonNum) {
@@ -157,29 +176,24 @@
             const list = document.getElementById('episodesList');
             list.innerHTML = '';
             data.episodes.forEach(ep => {
-                list.innerHTML += `
-                    <div class="episode-item" onclick="alert('سيتم توفير الحلقة قريباً')">
-                        <span>الحلقة ${ep.episode_number}:</span>
-                        <div style="font-size:14px;">${ep.name || 'بدون عنوان'}</div>
-                    </div>`;
+                list.innerHTML += `<div class="episode-item" onclick="alert('جاري تجهيز سيرفرات المشاهدة')"><span>الحلقة ${ep.episode_number}:</span><div>${ep.name}</div></div>`;
             });
         }
 
         function saveToList(listName) {
-            if(!currentMovieData) return;
             let list = JSON.parse(localStorage.getItem(listName) || "[]");
-            if(!list.find(m => m.id === currentMovieData.id)) {
-                list.push({
-                    id: currentMovieData.id,
-                    title: currentMovieData.title || currentMovieData.name,
-                    poster: currentMovieData.poster_path,
-                    type: type
-                });
+            if(!list.find(m => m.id == movieId)) {
+                list.push({ id: movieId, title: movieData.title || movieData.name, poster: movieData.poster_path, type: type });
                 localStorage.setItem(listName, JSON.stringify(list));
-                alert("تمت الإضافة للقائمة!");
+                alert("تمت الإضافة بنجاح!");
             } else {
-                alert("موجود بالفعل في قائمتك.");
+                alert("العمل مضاف بالفعل.");
             }
+        }
+
+        function closeTrailer() {
+            document.getElementById('trailerModal').style.display = 'none';
+            document.getElementById('trailerFrame').src = '';
         }
 
         async function getRelated() {
@@ -187,7 +201,7 @@
             const data = await res.json();
             const grid = document.getElementById('relatedGrid');
             data.results.slice(0, 6).forEach(item => {
-                grid.innerHTML += `<div class="related-item"><a href="movie.html?id=${item.id}&type=${type}"><img src="${IMG_URL + item.poster_path}"></a></div>`;
+                if(item.poster_path) grid.innerHTML += `<div class="related-item"><a href="movie.html?id=${item.id}&type=${type}"><img src="${IMG_URL + item.poster_path}"></a></div>`;
             });
         }
 
