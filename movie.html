@@ -3,70 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تفاصيل الفيلم - WatchGo</title>
+    <title>تفاصيل العمل - WatchGo</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root { --primary: #9b51e0; --bg: #050505; --text: #ffffff; --imdb-gold: #f5c518; }
         body { background: var(--bg); color: var(--text); font-family: sans-serif; margin: 0; padding: 20px; line-height: 1.6; }
-        
         .movie-layout { display: grid; grid-template-columns: 300px 1fr 250px; gap: 25px; max-width: 1200px; margin: auto; }
         .poster { width: 100%; border-radius: 12px; border: 2px solid #222; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         .poster-meta { display: flex; gap: 10px; margin-top: 10px; justify-content: center; }
         .imdb-badge { background: var(--imdb-gold); color: #000; padding: 5px 12px; border-radius: 5px; font-weight: bold; font-size: 14px; }
         .trailer-btn { background: #222; border: 1px solid #444; padding: 5px 12px; border-radius: 5px; color: #fff; cursor: pointer; font-size: 13px; }
-        
         .info-section h1 { color: var(--primary); margin-top: 0; font-size: 32px; }
         .details-box { background: #111; padding: 15px; border-radius: 12px; border: 1px solid #222; margin-top: 20px; }
         .row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #222; font-size: 14px; }
         .row:last-child { border-bottom: none; }
         .row span:first-child { color: var(--primary); font-weight: bold; }
-
         .action-panel { display: flex; flex-direction: column; gap: 12px; }
         .btn { background: var(--primary); color: white; padding: 15px; text-align: center; border-radius: 10px; text-decoration: none; font-weight: bold; border: none; cursor: pointer; transition: 0.3s; }
         .btn:hover { opacity: 0.8; transform: translateY(-2px); }
         .btn.download { background: #222; border: 1px solid #444; }
         .btn.list-btn { background: #151515; font-size: 13px; padding: 10px; border: 1px solid #333; }
-
         .cast-scroll { display: flex; gap: 15px; overflow-x: auto; padding: 15px 0; margin-top: 10px; scrollbar-width: none; }
         .cast-item { min-width: 90px; text-align: center; }
         .cast-item img { width: 70px; height: 70px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary); }
         .cast-item div { font-size: 11px; margin-top: 5px; color: #bbb; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
-        .episodes-container { margin-top: 20px; background: #111; border-radius: 12px; padding: 15px; display: none; border: 1px solid #222; }
-        .episode-item { display: flex; align-items: center; gap: 10px; padding: 12px; border-bottom: 1px solid #222; cursor: pointer; }
-        .episode-item:last-child { border-bottom: none; }
-        .episode-item span { color: var(--primary); font-weight: bold; }
-
+        /* تعديل شكل المواسم */
+        .seasons-bar { display: flex; gap: 10px; margin-bottom: 15px; overflow-x: auto; padding-bottom: 10px; }
+        .season-btn { background: #1a1a1a; border: 1px solid #444; color: white; padding: 8px 20px; border-radius: 50px; cursor: pointer; transition: 0.3s; }
+        .season-btn.active { background: var(--primary); border-color: var(--primary); }
+        /* تعديل شكل الحلقات (بدون اسم) */
+        .episode-card { background: #111; padding: 15px; border-radius: 15px; border: 1px solid #222; margin-bottom: 10px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: 0.3s; }
+        .episode-card:hover { border-color: var(--primary); background: #1a1a1a; }
         .related-container { margin-top: 30px; }
         .related-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 15px; margin-top: 15px; }
         .related-item img { width: 100%; height: 220px; object-fit: cover; border-radius: 10px; border: 1px solid #222; transition: 0.3s; }
-        .related-item img:hover { transform: scale(1.05); }
-
         #toast-container { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 10000; display: flex; flex-direction: column; gap: 10px; }
-        .toast { background: #1a1a1a; color: white; padding: 12px 25px; border-radius: 50px; border: 1px solid var(--primary); box-shadow: 0 5px 15px rgba(0,0,0,0.5); font-size: 14px; font-weight: bold; display: flex; align-items: center; gap: 10px; animation: slideUp 0.4s ease forwards, fadeOut 0.4s ease 2.5s forwards; }
-        
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes fadeOut { to { opacity: 0; transform: translateY(-20px); visibility: hidden; } }
-
-        /* تعديلات الموبايل - تم إزالة order: -1 لتعود الأزرار لمكانها */
-        @media (max-width: 768px) {
-            body { padding: 15px; }
-            .movie-layout { display: flex; flex-direction: column; gap: 20px; }
-            .poster-container { display: flex; flex-direction: column; align-items: center; }
-            .poster { max-width: 280px; }
-            .info-section h1 { text-align: center; font-size: 26px; }
-            .action-panel { width: 100%; order: 0; } /* الأزرار تعود للترتيب الطبيعي */
-            .related-grid { grid-template-columns: repeat(3, 1fr); gap: 10px; }
-        }
-
+        .toast { background: #1a1a1a; color: white; padding: 12px 25px; border-radius: 50px; border: 1px solid var(--primary); font-size: 14px; font-weight: bold; display: flex; align-items: center; gap: 10px; }
+        @media (max-width: 768px) { body { padding: 15px; } .movie-layout { display: flex; flex-direction: column; gap: 20px; } .poster { max-width: 280px; } .action-panel { width: 100%; order: 0; } .related-grid { grid-template-columns: repeat(3, 1fr); gap: 10px; } }
         #trailerModal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:9999; justify-content:center; align-items:center; }
         .modal-content { position:relative; width:90%; max-width:800px; }
     </style>
 </head>
 <body>
-
     <div id="toast-container"></div> 
-
     <div class="movie-layout">
         <div class="poster-container">
             <img src="" id="poster" class="poster">
@@ -74,55 +53,45 @@
                 <div class="imdb-badge" id="imdbRate"><i class="fa-solid fa-star"></i> --</div>
                 <button id="trailerLink" class="trailer-btn"><i class="fa-solid fa-play"></i> التريلر</button>
             </div>
-            
             <div style="margin-top: 15px; display: flex; flex-direction: column; gap: 8px; width: 100%; max-width: 280px;">
                 <button onclick="saveToList('favorites')" class="btn list-btn"><i class="fa-solid fa-heart"></i> أضف للمفضلة</button>
                 <button onclick="saveToList('watchLater')" class="btn list-btn"><i class="fa-solid fa-clock"></i> مشاهدة لاحقاً</button>
             </div>
         </div>
-
         <div class="info-section">
             <h1 id="movieTitle">جاري التحميل...</h1>
             <div style="color: var(--primary); font-weight:bold; margin-bottom:5px;">قصة الفيلم</div>
             <p id="movieOverview" style="color: #ccc; font-size: 15px;">...</p>
-            
             <div style="color: var(--primary); font-weight:bold; margin-top:15px;">طاقم العمل</div>
             <div id="castContainer" class="cast-scroll"></div>
-
             <div class="details-box">
                 <div class="row"><span>القسم:</span><span id="detCategory">---</span></div>
                 <div class="row"><span>النوع:</span><span id="detGenre">---</span></div>
                 <div class="row"><span>التوقيت:</span><span id="detRuntime">-- دقيقة</span></div>
                 <div class="row"><span>موعد الصدور:</span><span id="detYear">----</span></div>
             </div>
-
-            <div id="tvSection" class="episodes-container">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-                    <span style="color:var(--primary); font-weight:bold;">الحلقات</span>
-                    <select id="seasonSelect" onchange="loadEpisodes(this.value)" style="background:#222; color:#fff; border:1px solid #444; padding:5px; border-radius:5px;"></select>
-                </div>
+            <div id="tvSection" style="display:none; margin-top:20px;">
+                <h3 style="color:var(--primary)">المواسم</h3>
+                <div id="seasonsBar" class="seasons-bar"></div>
+                <h3 style="color:var(--primary)">الحلقات</h3>
                 <div id="episodesList"></div>
             </div>
-
             <div class="related-container">
                 <h3 style="color: var(--primary);">أفلام ومسلسلات مشابهة</h3>
                 <div class="related-grid" id="relatedGrid"></div>
             </div>
         </div>
-
         <div class="action-panel">
             <button onclick="showToast('رابط المشاهدة سيتوفر قريباً', 'fa-info-circle')" class="btn"><i class="fa-solid fa-play"></i> مشاهدة الآن</button>
             <button onclick="showToast('رابط التحميل سيتوفر قريباً', 'fa-info-circle')" class="btn download"><i class="fa-solid fa-download"></i> تحميل الآن</button>
         </div>
     </div>
-
     <div id="trailerModal">
         <div class="modal-content">
             <span onclick="closeTrailer()" style="position:absolute; top:-40px; right:0; color:white; font-size:35px; cursor:pointer;">&times;</span>
             <iframe id="trailerFrame" width="100%" height="450" src="" frameborder="0" allowfullscreen></iframe>
         </div>
     </div>
-
     <script>
         const API_KEY = 'b838a848a571a893e6b0effe4bd53db8';
         const IMG_URL = 'https://image.tmdb.org/t/p/w500';
@@ -130,7 +99,6 @@
         const movieId = params.get('id');
         const type = params.get('type') || 'movie';
         let movieData = null;
-
         function showToast(message, icon = 'fa-check-circle') {
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
@@ -139,37 +107,30 @@
             container.appendChild(toast);
             setTimeout(() => { toast.remove(); }, 3000);
         }
-
         async function getMovieDetails() {
             if(!movieId) return;
             const res = await fetch(`https://api.themoviedb.org/3/${type}/${movieId}?api_key=${API_KEY}&language=ar-AR&append_to_response=videos,credits`);
             movieData = await res.json();
-            document.getElementById('movieTitle').innerText = movieData.title || movieData.name;
+            // الاسم الأصلي (الأجنبي)
+            document.getElementById('movieTitle').innerText = movieData.original_title || movieData.original_name;
             document.getElementById('poster').src = IMG_URL + movieData.poster_path;
             document.getElementById('movieOverview').innerText = movieData.overview;
             document.getElementById('imdbRate').innerHTML = `<i class="fa-solid fa-star"></i> ${movieData.vote_average.toFixed(1)}`;
-            
             document.getElementById('detCategory').innerText = type === 'movie' ? 'أفلام' : 'مسلسلات';
             document.getElementById('detGenre').innerText = movieData.genres.map(g => g.name).join(' / ');
             document.getElementById('detRuntime').innerText = (movieData.runtime || (movieData.episode_run_time ? movieData.episode_run_time[0] : '--')) + ' دقيقة';
             document.getElementById('detYear').innerText = (movieData.release_date || movieData.first_air_date || '').split('-')[0];
-
             const castContainer = document.getElementById('castContainer');
             movieData.credits.cast.slice(0, 12).forEach(actor => {
-                if(actor.profile_path) {
-                    castContainer.innerHTML += `<div class="cast-item"><img src="${IMG_URL + actor.profile_path}"><div>${actor.name}</div></div>`;
-                }
+                if(actor.profile_path) { castContainer.innerHTML += `<div class="cast-item"><img src="${IMG_URL + actor.profile_path}"><div>${actor.name}</div></div>`; }
             });
-
             getRelated();
-
             if(type === 'tv') {
                 document.getElementById('tvSection').style.display = 'block';
-                const select = document.getElementById('seasonSelect');
-                movieData.seasons.forEach(s => { if(s.season_number > 0) select.innerHTML += `<option value="${s.season_number}">الموسم ${s.season_number}</option>`; });
+                const bar = document.getElementById('seasonsBar');
+                movieData.seasons.forEach(s => { if(s.season_number > 0) bar.innerHTML += `<button class="season-btn" onclick="loadEpisodes(${s.season_number}, this)">موسم ${s.season_number}</button>`; });
                 loadEpisodes(1);
             }
-
             const trailer = movieData.videos.results.find(v => v.type === 'Trailer');
             if(trailer) {
                 document.getElementById('trailerLink').onclick = () => {
@@ -178,43 +139,33 @@
                 };
             }
         }
-
         async function getRelated() {
             const res = await fetch(`https://api.themoviedb.org/3/${type}/${movieId}/recommendations?api_key=${API_KEY}&language=ar-AR`);
             const data = await res.json();
             const grid = document.getElementById('relatedGrid');
             grid.innerHTML = '';
-            data.results.slice(0, 6).forEach(item => {
-                if(item.poster_path) {
-                    grid.innerHTML += `<div class="related-item"><a href="movie.html?id=${item.id}&type=${type}"><img src="${IMG_URL + item.poster_path}"></a></div>`;
-                }
-            });
+            data.results.slice(0, 6).forEach(item => { if(item.poster_path) grid.innerHTML += `<div class="related-item"><a href="movie.html?id=${item.id}&type=${type}"><img src="${IMG_URL + item.poster_path}"></a></div>`; });
         }
-
-        async function loadEpisodes(seasonNum) {
+        async function loadEpisodes(seasonNum, btnElement) {
             const res = await fetch(`https://api.themoviedb.org/3/tv/${movieId}/season/${seasonNum}?api_key=${API_KEY}&language=ar-AR`);
             const data = await res.json();
             const list = document.getElementById('episodesList');
             list.innerHTML = '';
-            data.episodes.forEach(ep => {
-                list.innerHTML += `<div class="episode-item" onclick="showToast('الحلقة ستتوفر قريباً', 'fa-clock')"><span>الحلقة ${ep.episode_number}:</span><div>${ep.name}</div></div>`;
-            });
+            // عرض رقم الحلقة فقط بدون الاسم
+            data.episodes.forEach(ep => { list.innerHTML += `<div class="episode-card" onclick="showToast('الحلقة ستتوفر قريباً', 'fa-clock')"><span>الحلقة ${ep.episode_number}</span><i class="fa-solid fa-play"></i></div>`; });
+            document.querySelectorAll('.season-btn').forEach(b => b.classList.remove('active'));
+            if(btnElement) btnElement.classList.add('active');
         }
-
         function saveToList(listName) {
             let list = JSON.parse(localStorage.getItem(listName) || "[]");
             const label = listName === 'favorites' ? 'المفضلة' : 'المشاهدة لاحقاً';
             if(!list.find(m => m.id == movieId)) {
-                list.push({ id: movieId, title: movieData.title || movieData.name, poster: movieData.poster_path, type: type });
+                list.push({ id: movieId, title: movieData.original_title || movieData.original_name, poster: movieData.poster_path, type: type });
                 localStorage.setItem(listName, JSON.stringify(list));
                 showToast(`تمت الإضافة إلى ${label} بنجاح!`);
-            } else {
-                showToast(`العمل موجود بالفعل في ${label}`, 'fa-exclamation-circle');
-            }
+            } else { showToast(`العمل موجود بالفعل في ${label}`, 'fa-exclamation-circle'); }
         }
-
         function closeTrailer() { document.getElementById('trailerModal').style.display = 'none'; document.getElementById('trailerFrame').src = ''; }
-
         getMovieDetails();
     </script>
 </body>
