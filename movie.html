@@ -3,34 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WatchGo - Premium UI</title>
+    <title>WatchGo - Ultimate Experience</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
+        /* --- الأساسيات والألوان --- */
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        :root { --primary: #9b51e0; --bg: #050505; --text: #ffffff; --imdb-gold: #f5c518; }
+        :root { 
+            --primary: #9b51e0; 
+            --bg: #050505; 
+            --text: #ffffff; 
+            --imdb-gold: #f5c518;
+            --glass: rgba(255, 255, 255, 0.05);
+            --shadow-purple: rgba(155, 81, 224, 0.3);
+        }
         
         body { 
             background-color: var(--bg); 
             color: var(--text); 
             font-family: 'Segoe UI', Tahoma, sans-serif; 
             overflow-x: hidden; 
+            line-height: 1.6;
         }
 
-        /* --- أنميشن الظهور --- */
+        /* --- أنميشن احترافي --- */
         @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
+            from { opacity: 0; transform: translateY(40px); filter: blur(10px); }
+            to { opacity: 1; transform: translateY(0); filter: blur(0); }
         }
-        @keyframes scaleIn {
-            from { opacity: 0; transform: scale(0.9); }
-            to { opacity: 1; transform: scale(1); }
+        @keyframes glowPulse {
+            0% { box-shadow: 0 0 5px var(--primary); }
+            50% { box-shadow: 0 0 20px var(--primary); }
+            100% { box-shadow: 0 0 5px var(--primary); }
         }
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(155, 81, 224, 0.4); }
-            70% { box-shadow: 0 0 0 15px rgba(155, 81, 224, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(155, 81, 224, 0); }
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(50px); }
+            to { opacity: 1; transform: translateX(0); }
         }
 
+        /* --- الخلفية السينمائية --- */
         .hero-section {
             position: relative;
             width: 100%;
@@ -41,40 +51,47 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 50px 5%;
+            padding: 60px 5%;
         }
 
         .hero-overlay {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(to bottom, rgba(5,5,5,0.4) 0%, rgba(5,5,5,0.8) 60%, rgba(5,5,5,1) 100%);
+            background: linear-gradient(to bottom, 
+                rgba(5,5,5,0.3) 0%, 
+                rgba(5,5,5,0.8) 50%, 
+                rgba(5,5,5,1) 100%);
             z-index: 1;
         }
 
+        /* --- تقسيم الواجهة --- */
         .movie-layout { 
             position: relative;
             z-index: 2;
             display: grid; 
-            grid-template-columns: 300px 1fr; 
-            gap: 40px; 
+            grid-template-columns: 320px 1fr; 
+            gap: 50px; 
             width: 100%;
-            max-width: 1400px;
-            margin-bottom: 50px;
-            animation: fadeInUp 0.8s ease-out forwards;
+            max-width: 1450px;
+            animation: fadeInUp 1s cubic-bezier(0.22, 1, 0.36, 1);
         }
 
-        .side-panel { display: flex; flex-direction: column; gap: 15px; }
-        .poster { 
-            width: 100%; 
-            border-radius: 12px; 
-            border: 2px solid var(--primary); 
-            box-shadow: 0 0 30px rgba(155, 81, 224, 0.2);
-            animation: scaleIn 1s ease-out;
+        /* --- الجانب الأيمن (البوستر والأكشن) --- */
+        .side-panel { display: flex; flex-direction: column; gap: 20px; }
+        .poster-wrapper {
+            position: relative;
+            border-radius: 15px;
+            overflow: hidden;
+            border: 2px solid var(--primary);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+            transition: 0.5s;
         }
+        .poster-wrapper:hover { transform: scale(1.02); box-shadow: 0 0 30px var(--shadow-purple); }
+        .poster { width: 100%; display: block; }
 
         .btn {
-            padding: 14px;
-            border-radius: 10px;
+            padding: 16px;
+            border-radius: 12px;
             text-align: center;
             font-weight: bold;
             cursor: pointer;
@@ -82,100 +99,113 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
-            font-size: 15px;
-            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            gap: 12px;
+            font-size: 16px;
+            transition: 0.4s;
             color: white;
             text-decoration: none;
         }
-        .btn-watch { 
-            background: var(--primary); 
-            animation: pulse 2s infinite; 
-        }
-        .btn-download { background: rgba(34, 34, 34, 0.8); border: 1px solid #444; }
+        .btn-watch { background: var(--primary); animation: glowPulse 3s infinite; }
+        .btn-download { background: rgba(40, 40, 40, 0.8); border: 1px solid #444; backdrop-filter: blur(5px); }
         .btn-trailer { background: #ff0000; }
-        
-        .btn:hover { 
-            transform: translateY(-5px) scale(1.02); 
-            filter: brightness(1.2);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+        .btn:hover { transform: translateY(-5px); filter: brightness(1.2); }
+
+        /* --- منطقة المعلومات --- */
+        .content-panel h1 { 
+            font-size: 50px; 
+            margin-bottom: 20px; 
+            text-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            letter-spacing: 1px;
         }
 
-        .content-panel h1 { 
-            font-size: 45px; 
-            margin-bottom: 15px; 
-            text-align: right;
-            text-shadow: 2px 2px 10px rgba(0,0,0,0.5);
-        }
-        
         .section-header {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
             color: var(--primary);
-            font-size: 20px;
-            margin: 25px 0 10px;
+            font-size: 22px;
+            margin: 35px 0 15px;
             font-weight: bold;
+            border-right: 4px solid var(--primary);
+            padding-right: 15px;
         }
 
         .overview { 
-            font-size: 16px; 
-            line-height: 1.8; 
-            color: #ddd; 
-            background: rgba(255,255,255,0.03);
-            padding: 20px;
-            border-radius: 12px;
-            border-right: 4px solid var(--primary);
-            transition: 0.3s;
+            font-size: 18px; 
+            line-height: 2; 
+            color: #eee; 
+            background: rgba(255,255,255,0.04);
+            padding: 25px;
+            border-radius: 15px;
+            backdrop-filter: blur(5px);
         }
-        .overview:hover { background: rgba(255,255,255,0.06); }
 
+        /* شبكة التفاصيل */
         .details-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-            margin-top: 20px;
+            gap: 15px;
+            margin-top: 25px;
         }
         .detail-card {
-            background: rgba(20, 20, 20, 0.7);
-            padding: 12px 18px;
-            border-radius: 8px;
+            background: var(--glass);
+            padding: 15px 20px;
+            border-radius: 10px;
             border: 1px solid rgba(255,255,255,0.05);
             display: flex;
             justify-content: space-between;
             transition: 0.3s;
         }
-        .detail-card:hover { border-color: var(--primary); transform: translateX(-5px); }
-        .detail-card b { color: var(--primary); display: flex; align-items: center; gap: 8px; font-size: 14px; }
+        .detail-card:hover { background: rgba(155, 81, 224, 0.1); border-color: var(--primary); }
+        .detail-card b { color: var(--primary); display: flex; align-items: center; gap: 10px; }
 
-        .cast-scroll { display: flex; gap: 15px; overflow-x: auto; padding: 10px 0; scrollbar-width: none; }
-        .cast-item { 
-            min-width: 90px; 
-            text-align: center; 
-            transition: 0.4s;
+        /* طاقم العمل */
+        .cast-scroll { display: flex; gap: 20px; overflow-x: auto; padding: 15px 5px; scrollbar-width: none; }
+        .cast-item { min-width: 100px; text-align: center; transition: 0.4s; }
+        .cast-item:hover { transform: translateY(-10px); }
+        .cast-item img { width: 85px; height: 85px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary); box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        .cast-item p { font-size: 13px; margin-top: 10px; color: #bbb; }
+
+        /* --- نظام المواسم والحلقات (الاحترافي) --- */
+        .series-container { margin-top: 50px; width: 100%; animation: fadeInUp 1s; }
+        .seasons-tabs { display: flex; gap: 15px; overflow-x: auto; padding: 10px 0; scrollbar-width: none; }
+        .season-tab {
+            background: var(--glass); padding: 15px 30px; border-radius: 12px; cursor: pointer;
+            border: 1px solid rgba(255,255,255,0.1); transition: 0.4s; font-weight: bold;
         }
-        .cast-item:hover { transform: scale(1.1); }
-        .cast-item img { width: 75px; height: 75px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary); }
-        .cast-item p { font-size: 12px; margin-top: 8px; color: #bbb; }
+        .season-tab.active { background: var(--primary); box-shadow: 0 0 20px var(--shadow-purple); border-color: var(--primary); }
 
-        .related-section { position: relative; z-index: 2; width: 100%; max-width: 1400px; padding-bottom: 50px; }
-        .related-grid {
-            display: grid;
-            grid-template-columns: repeat(6, 1fr);
-            gap: 15px;
-            margin-top: 20px;
+        .episodes-grid { 
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); 
+            gap: 25px; margin-top: 30px; 
         }
-        .related-card { transition: 0.4s; border-radius: 8px; overflow: hidden; }
-        .related-card img { width: 100%; transition: 0.4s; border: 1px solid #333; }
-        .related-card:hover { transform: scale(1.08); box-shadow: 0 0 20px var(--primary); z-index: 5; }
+        .episode-card {
+            background: var(--glass); border-radius: 15px; overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.05); backdrop-filter: blur(15px);
+            transition: 0.5s; cursor: pointer;
+        }
+        .episode-card:hover { transform: scale(1.03); border-color: var(--primary); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .episode-img-box { position: relative; height: 170px; }
+        .episode-img { width: 100%; height: 100%; object-fit: cover; }
+        .episode-play-icon { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 40px; color: white; opacity: 0; transition: 0.3s; }
+        .episode-card:hover .episode-play-icon { opacity: 1; }
+        .episode-info { padding: 18px; }
+        .ep-num { color: var(--primary); font-weight: bold; font-size: 14px; margin-bottom: 5px; }
 
-        #trailerModal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:10000; justify-content:center; align-items:center; }
+        /* --- المتشابهات --- */
+        .related-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 15px; margin-top: 25px; }
+        .related-card { border-radius: 10px; overflow: hidden; transition: 0.4s; border: 1px solid #222; }
+        .related-card:hover { transform: scale(1.1) rotate(2deg); z-index: 10; border-color: var(--primary); }
+        .related-card img { width: 100%; height: 100%; object-fit: cover; }
+
+        /* Modal التريلر */
+        #trailerModal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:99999; justify-content:center; align-items:center; }
         
-        @media (max-width: 1000px) {
-            .movie-layout { grid-template-columns: 1fr; }
+        @media (max-width: 1100px) {
+            .movie-layout { grid-template-columns: 1fr; justify-items: center; text-align: center; }
+            .section-header { justify-content: center; border-right: none; border-bottom: 2px solid var(--primary); padding-bottom: 5px; }
+            .details-grid { grid-template-columns: 1fr; }
             .related-grid { grid-template-columns: repeat(3, 1fr); }
-            .side-panel { align-items: center; }
-            .poster { max-width: 280px; }
         }
     </style>
 </head>
@@ -186,43 +216,49 @@
         
         <div class="movie-layout">
             <div class="side-panel">
-                <img src="" id="poster" class="poster">
-                <button class="btn btn-watch"><i class="fa-solid fa-play"></i> المشاهدة الآن</button>
-                <button class="btn btn-download"><i class="fa-solid fa-download"></i> تحميل الفيلم</button>
-                <button id="openTrailer" class="btn btn-trailer"><i class="fa-brands fa-youtube"></i> العرض الدعائي</button>
+                <div class="poster-wrapper">
+                    <img src="" id="poster" class="poster">
+                </div>
+                <button class="btn btn-watch"><i class="fa-solid fa-play"></i> مـشـاهـدة الآن</button>
+                <button class="btn btn-download"><i class="fa-solid fa-download"></i> تـحـمـيـل الـعـمـل</button>
+                <button id="openTrailer" class="btn btn-trailer"><i class="fa-brands fa-youtube"></i> الإعـلان الـرسـمـي</button>
             </div>
 
             <div class="content-panel">
-                <h1 id="movieTitleEN">Movie Title</h1>
+                <h1 id="movieTitleEN">Loading...</h1>
                 
-                <div class="section-header"><i class="fa-solid fa-align-right"></i> قصة الفيلم</div>
+                <div class="section-header"><i class="fa-solid fa-align-right"></i> قـصـة الـفـيـلـم</div>
                 <p id="movieOverviewAR" class="overview">...</p>
 
-                <div class="section-header"><i class="fa-solid fa-list-check"></i> معلومات العمل</div>
+                <div class="section-header"><i class="fa-solid fa-circle-info"></i> تـفـاصـيـل الـعـمـل</div>
                 <div class="details-grid">
-                    <div class="detail-card"><b><i class="fa-solid fa-film"></i> القسم:</b><span id="detCategory">أفلام</span></div>
-                    <div class="detail-card"><b><i class="fa-solid fa-tags"></i> النوع:</b><span id="detGenre">---</span></div>
-                    <div class="detail-card"><b><i class="fa-solid fa-clock"></i> المدة:</b><span id="detRuntime">-- دقيقة</span></div>
-                    <div class="detail-card"><b><i class="fa-solid fa-calendar"></i> السنة:</b><span id="detYear">----</span></div>
-                    <div class="detail-card"><b><i class="fa-solid fa-star" style="color:var(--imdb-gold)"></i> التقييم:</b><span id="imdbRate">-- / 10</span></div>
-                    <div class="detail-card"><b><i class="fa-solid fa-globe"></i> اللغة:</b><span id="detLang">--</span></div>
+                    <div class="detail-card"><b><i class="fa-solid fa-folder"></i> الـقـسـم:</b><span id="detCategory">--</span></div>
+                    <div class="detail-card"><b><i class="fa-solid fa-masks-theater"></i> الـنـوع:</b><span id="detGenre">--</span></div>
+                    <div class="detail-card"><b><i class="fa-solid fa-clock"></i> الـمـدة:</b><span id="detRuntime">--</span></div>
+                    <div class="detail-card"><b><i class="fa-solid fa-calendar-star"></i> الـسـنـة:</b><span id="detYear">--</span></div>
+                    <div class="detail-card"><b><i class="fa-solid fa-star" style="color:var(--imdb-gold)"></i> الـتـقـيـيـم:</b><span id="imdbRate">--</span></div>
+                    <div class="detail-card"><b><i class="fa-solid fa-language"></i> الـلـغـة:</b><span id="detLang">--</span></div>
                 </div>
 
-                <div class="section-header"><i class="fa-solid fa-users"></i> نجوم العمل</div>
+                <div class="section-header"><i class="fa-solid fa-users-viewfinder"></i> طـاقـم الـعـمـل</div>
                 <div id="castContainer" class="cast-scroll"></div>
-            </div>
-        </div>
+                
+                <div id="seriesSection" class="series-container" style="display: none;">
+                    <div class="section-header"><i class="fa-solid fa-tv"></i> الـمـواسـم والـحـلـقـات</div>
+                    <div class="seasons-tabs" id="seasonsTabs"></div>
+                    <div class="episodes-grid" id="episodesGrid"></div>
+                </div>
 
-        <div class="related-section">
-            <div class="section-header"><i class="fa-solid fa-layer-group"></i> أفلام قد تعجبك</div>
-            <div class="related-grid" id="relatedGrid"></div>
+                <div class="section-header"><i class="fa-solid fa-wand-magic-sparkles"></i> أعـمـال مـشـابـهـة</div>
+                <div class="related-grid" id="relatedGrid"></div>
+            </div>
         </div>
     </div>
 
     <div id="trailerModal">
-        <div style="position:relative; width:90%; max-width:900px;">
-            <span id="closeTrailer" style="position:absolute; top:-40px; right:0; color:white; font-size:30px; cursor:pointer;">&times; إغلاق</span>
-            <iframe id="trailerFrame" width="100%" height="500" src="" frameborder="0" allowfullscreen></iframe>
+        <div style="position:relative; width:85%; max-width:1000px;">
+            <span id="closeTrailer" style="position:absolute; top:-45px; right:0; color:white; font-size:35px; cursor:pointer;"><i class="fa-solid fa-circle-xmark"></i></span>
+            <iframe id="trailerFrame" width="100%" height="550" src="" frameborder="0" allowfullscreen style="border-radius:15px; border:3px solid var(--primary);"></iframe>
         </div>
     </div>
 
@@ -232,60 +268,110 @@
         const movieId = params.get('id');
         const type = params.get('type') || 'movie';
 
-        async function loadData() {
+        async function fetchAll() {
             if(!movieId) return;
+
+            // جلب البيانات (عربي وإنجليزي ومتشابهات)
             const [resAR, resEN, resRelated] = await Promise.all([
                 fetch(`https://api.themoviedb.org/3/${type}/${movieId}?api_key=${API_KEY}&language=ar-SA`),
                 fetch(`https://api.themoviedb.org/3/${type}/${movieId}?api_key=${API_KEY}&language=en-US&append_to_response=credits,videos`),
                 fetch(`https://api.themoviedb.org/3/${type}/${movieId}/similar?api_key=${API_KEY}&language=ar-SA`)
             ]);
-            const dataAR = await resAR.json();
-            const dataEN = await resEN.json();
-            const dataRelated = await resRelated.json();
 
-            document.getElementById('movieTitleEN').innerText = dataEN.title || dataEN.name;
-            document.getElementById('movieOverviewAR').innerText = dataAR.overview || "الوصف غير متاح بالعربية.";
-            document.getElementById('poster').src = 'https://image.tmdb.org/t/p/w500' + dataEN.poster_path;
-            document.getElementById('heroSection').style.backgroundImage = `url(https://image.tmdb.org/t/p/original${dataEN.backdrop_path})`;
-            document.getElementById('detGenre').innerText = dataAR.genres.slice(0, 2).map(g => g.name).join(' / ');
-            document.getElementById('detRuntime').innerText = (dataEN.runtime || dataEN.episode_run_time?.[0] || '--') + ' دقيقة';
-            document.getElementById('detYear').innerText = (dataEN.release_date || dataEN.first_air_date || '').split('-')[0];
-            document.getElementById('imdbRate').innerText = dataEN.vote_average.toFixed(1) + ' / 10';
-            document.getElementById('detLang').innerText = dataEN.original_language.toUpperCase();
+            const dAR = await resAR.json();
+            const dEN = await resEN.json();
+            const dRel = await resRelated.json();
 
+            // تعبئة البيانات
+            document.getElementById('movieTitleEN').innerText = dEN.title || dEN.name;
+            document.getElementById('movieOverviewAR').innerText = dAR.overview || "قريباً..";
+            document.getElementById('poster').src = 'https://image.tmdb.org/t/p/w500' + dEN.poster_path;
+            document.getElementById('heroSection').style.backgroundImage = `url(https://image.tmdb.org/t/p/original${dEN.backdrop_path})`;
+            
+            document.getElementById('detCategory').innerText = type === 'movie' ? 'أفلام' : 'مسلسلات';
+            document.getElementById('detGenre').innerText = dAR.genres.slice(0, 2).map(g => g.name).join(' / ');
+            document.getElementById('detRuntime').innerText = (dEN.runtime || dEN.episode_run_time?.[0] || '--') + ' دقيقة';
+            document.getElementById('detYear').innerText = (dEN.release_date || dEN.first_air_date || '').split('-')[0];
+            document.getElementById('imdbRate').innerText = dEN.vote_average.toFixed(1) + ' / 10';
+            document.getElementById('detLang').innerText = dEN.original_language.toUpperCase();
+
+            // طاقم العمل
             const castCont = document.getElementById('castContainer');
-            dataEN.credits.cast.slice(0, 10).forEach(c => {
+            dEN.credits.cast.slice(0, 12).forEach(c => {
                 if(c.profile_path) {
                     castCont.innerHTML += `<div class="cast-item"><img src="https://image.tmdb.org/t/p/w200${c.profile_path}"><p>${c.name}</p></div>`;
                 }
             });
 
-            const relatedGrid = document.getElementById('relatedGrid');
-            dataRelated.results.slice(0, 6).forEach(item => {
+            // المتشابهات
+            const relGrid = document.getElementById('relatedGrid');
+            dRel.results.slice(0, 6).forEach(item => {
                 if(item.poster_path) {
-                    relatedGrid.innerHTML += `
-                        <a href="movie.html?id=${item.id}&type=${type}" class="related-card">
-                            <img src="https://image.tmdb.org/t/p/w300${item.poster_path}">
-                        </a>`;
+                    relGrid.innerHTML += `<a href="movie.html?id=${item.id}&type=${type}" class="related-card"><img src="https://image.tmdb.org/t/p/w300${item.poster_path}"></a>`;
                 }
             });
 
-            const trailer = dataEN.videos.results.find(v => v.type === 'Trailer');
+            // التريلر
+            const trailer = dEN.videos.results.find(v => v.type === 'Trailer');
             if(trailer) {
                 document.getElementById('openTrailer').onclick = () => {
                     document.getElementById('trailerFrame').src = `https://www.youtube.com/embed/${trailer.key}?autoplay=1`;
                     document.getElementById('trailerModal').style.display = 'flex';
                 };
-            } else {
-                document.getElementById('openTrailer').style.display = 'none';
+            } else { document.getElementById('openTrailer').style.display = 'none'; }
+
+            // تفعيل نظام المسلسلات
+            if(type === 'tv') {
+                document.getElementById('seriesSection').style.display = 'block';
+                setupSeasons(dEN.seasons);
             }
+        }
+
+        function setupSeasons(seasons) {
+            const tabs = document.getElementById('seasonsTabs');
+            seasons.forEach((s, i) => {
+                if(s.season_number === 0) return;
+                const btn = document.createElement('div');
+                btn.className = `season-tab ${i === (seasons[0].season_number === 0 ? 1 : 0) ? 'active' : ''}`;
+                btn.innerText = `الموسم ${s.season_number}`;
+                btn.onclick = () => {
+                    document.querySelectorAll('.season-tab').forEach(t => t.classList.remove('active'));
+                    btn.classList.add('active');
+                    loadEpisodes(s.season_number);
+                };
+                tabs.appendChild(btn);
+            });
+            loadEpisodes(seasons[seasons[0].season_number === 0 ? 1 : 0].season_number);
+        }
+
+        async function loadEpisodes(num) {
+            const grid = document.getElementById('episodesGrid');
+            grid.innerHTML = '<div style="color:var(--primary)">جاري سحب الحلقات...</div>';
+            const res = await fetch(`https://api.themoviedb.org/3/tv/${movieId}/season/${num}?api_key=${API_KEY}&language=ar-SA`);
+            const data = await res.json();
+            grid.innerHTML = '';
+            data.episodes.forEach(ep => {
+                const img = ep.still_path ? `https://image.tmdb.org/t/p/w300${ep.still_path}` : 'https://via.placeholder.com/300x170/111/9b51e0?text=WatchGo';
+                grid.innerHTML += `
+                    <div class="episode-card" style="animation: slideInRight 0.5s ease backwards">
+                        <div class="episode-img-box">
+                            <img src="${img}" class="episode-img">
+                            <i class="fa-solid fa-circle-play episode-play-icon"></i>
+                        </div>
+                        <div class="episode-info">
+                            <div class="ep-num">الحلقة ${ep.episode_number}</div>
+                            <div class="ep-title">${ep.name}</div>
+                        </div>
+                    </div>`;
+            });
         }
 
         document.getElementById('closeTrailer').onclick = () => {
             document.getElementById('trailerModal').style.display = 'none';
             document.getElementById('trailerFrame').src = '';
         };
-        loadData();
+
+        fetchAll();
     </script>
 </body>
 </html>
