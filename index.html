@@ -8,36 +8,35 @@
     <style>
         :root { --primary: #9b51e0; --bg: #050505; --card-bg: #121212; --text: #ffffff; }
         body { background: var(--bg); color: var(--text); font-family: sans-serif; margin: 0; }
-        
+       
         .header { background: rgba(10, 10, 10, 0.95); padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--primary); position: sticky; top: 0; z-index: 100; backdrop-filter: blur(10px); }
         .logo-container { display: flex; align-items: center; gap: 10px; }
         .logo-container img { width: 45px; height: 45px; border-radius: 50%; border: 2px solid var(--primary); object-fit: cover; }
         .logo-text { font-size: 20px; font-weight: bold; color: var(--text); letter-spacing: 1px; }
         .header-icons { display: flex; align-items: center; gap: 15px; }
         .icon-btn { font-size: 24px; cursor: pointer; color: var(--text); }
-        /* ستايل أيقونة القلب */
         .heart-icon { font-size: 22px; cursor: pointer; color: var(--primary); }
-
         #searchBox { display: none; padding: 15px; background: #050505; }
         #searchBox input { width: 100%; padding: 12px; border-radius: 25px; border: none; background: #ffffff; color: #000; outline: none; text-align: center; font-weight: bold; }
-
         .side-nav { height: 100%; width: 0; position: fixed; z-index: 1000; top: 0; right: 0; background-color: #111; overflow-x: hidden; transition: 0.4s; padding-top: 20px; border-right: 2px solid var(--primary); }
-        
+       
         .close-btn { font-size: 35px; color: var(--primary); margin: 0 20px 20px 20px; cursor: pointer; display: block; }
-
         .main-menu-btn { background: #1a1a1a; margin: 10px 15px; border-radius: 12px; border: 1px solid #333; padding: 15px 20px !important; font-weight: bold; display: flex; justify-content: space-between; align-items: center; transition: 0.3s; }
         .main-menu-btn:hover { background: var(--primary); border-color: #fff; transform: translateX(-5px); }
-        
+       
         .side-nav a { padding: 15px 25px; text-decoration: none; font-size: 16px; color: var(--text); display: block; cursor: pointer; }
         .sub-menu { display: none; background: #000; padding: 5px 30px; }
         .sub-menu a { border-bottom: 1px solid #111; font-size: 14px; padding: 10px; }
-        
+       
         .movies-container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 25px; padding: 25px; }
-        .movie-card { background: var(--card-bg); border-radius: 15px; overflow: hidden; transition: all 0.4s ease; border: 2px solid transparent; }
+        .movie-card { background: var(--card-bg); border-radius: 15px; overflow: hidden; transition: all 0.4s ease; border: 2px solid transparent; text-align: center; }
         .movie-card:hover { transform: scale(1.08); border-color: var(--primary); box-shadow: 0 0 20px var(--primary); }
         .movie-card img { width: 100%; height: 230px; object-fit: cover; }
+        .movie-info { padding: 10px 8px; font-size: 14px; }
+        .movie-info strong { display: block; margin-bottom: 4px; }
+        .movie-info small { color: #aaa; }
         .watch-btn { display: block; background: var(--primary); color: #fff; text-align: center; padding: 12px; text-decoration: none; font-weight: bold; }
-
+        #loading, #error { text-align: center; padding: 30px; font-size: 18px; }
         @media (min-width: 900px) {
             .desktop-wrapper { display: grid; grid-template-columns: 1fr 300px; gap: 20px; max-width: 1200px; margin: 20px auto; align-items: start; }
             .movies-container { grid-template-columns: repeat(4, 1fr); padding: 0; }
@@ -47,7 +46,6 @@
     </style>
 </head>
 <body>
-
     <header class="header">
         <div class="logo-container">
             <img src="https://i.ibb.co/5ggRsXdV/Red-Black-Modern-Movie-Cinema-Presentation-20260311-124846.jpg" alt="Logo">
@@ -62,22 +60,22 @@
         </div>
     </header>
 
-    <div id="searchBox"><input type="text" id="searchInput" placeholder="ابحث..." onkeyup="searchFromApi(this.value)"></div>
+    <div id="searchBox"><input type="text" id="searchInput" placeholder="ابحث عن فيلم أو مسلسل..." onkeyup="searchFromApi(this.value)"></div>
 
     <div id="mySideNav" class="side-nav">
-        <span class="close-btn" onclick="closeNav()">&times;</span>
+        <span class="close-btn" onclick="closeNav()">×</span>
         <a href="#" onclick="fetchFromApi('movie/popular')">الرئيسية</a>
-        
+       
         <a href="#" class="main-menu-btn" onclick="toggleSub('subMovies')">أفلام أجنبي ▾</a>
         <div id="subMovies" class="sub-menu">
             <a href="#" onclick="fetchFromApi('movie/top_rated')">الأعلى تقييماً IMDB ⭐</a>
             <a href="#" onclick="fetchFromApi('discover/movie', '28')">أكشن</a>
             <a href="#" onclick="fetchFromApi('discover/movie', '27')">رعب</a>
         </div>
-        
+       
         <a href="#" class="main-menu-btn" onclick="toggleSub('subMoviesAr')">أفلام عربي ▾</a>
         <div id="subMoviesAr" class="sub-menu">
-            <a href="#" onclick="fetchFromApi('discover/movie', '', 'ar')">مصرية</a>
+            <a href="#" onclick="fetchFromApi('discover/movie', '', '', 'EG')">مصرية</a>
         </div>
 
         <a href="#" class="main-menu-btn" onclick="toggleSub('subSeries')">مسلسلات أجنبي ▾</a>
@@ -86,12 +84,13 @@
             <a href="#" onclick="fetchFromApi('tv/popular')">الأكثر شهرة</a>
         </div>
 
-        <a href="#" class="main-menu-btn" onclick="fetchFromApi('discover/movie', '16')">أنمي</a>
         <a href="#" class="main-menu-btn" onclick="fetchFromApi('discover/movie', '16')">أنميشن</a>
     </div>
 
     <div class="desktop-wrapper">
-        <div class="movies-container" id="movies-grid"></div>
+        <div class="movies-container" id="movies-grid">
+            <div id="loading">جاري تحميل المحتوى...</div>
+        </div>
         <aside class="desktop-sidebar">
             <h3 style="color: var(--primary); margin-top: 0;">أحدث الحلقات</h3>
             <div style="font-size: 14px; margin-bottom: 10px; border-bottom: 1px solid #333; padding-bottom: 5px;">📺 سيتم التحديث قريباً...</div>
@@ -102,52 +101,84 @@
         const API_KEY = 'b838a848a571a893e6b0effe4bd53db8';
         const BASE_URL = 'https://api.themoviedb.org/3';
         const IMG_URL = 'https://image.tmdb.org/t/p/w500';
+        const DEFAULT_LANG = 'ar-SA';
 
-        function openNav() { document.getElementById("mySideNav").style.width = "250px"; }
-        function closeNav() { document.getElementById("mySideNav").style.width = "0"; }
-        function toggleSub(id) { document.getElementById(id).style.display = (document.getElementById(id).style.display === "block") ? "none" : "block"; }
-        function toggleSearch() { 
-            let box = document.getElementById("searchBox");
-            box.style.display = (box.style.display === "block") ? "none" : "block"; 
+        function openNav()  { document.getElementById("mySideNav").style.width = "250px"; }
+        function closeNav() { document.getElementById("mySideNav").style.width = "0";    }
+        function toggleSub(id) {
+            const el = document.getElementById(id);
+            el.style.display = (el.style.display === "block") ? "none" : "block";
+        }
+        function toggleSearch() {
+            const box = document.getElementById("searchBox");
+            box.style.display = (box.style.display === "block") ? "none" : "block";
+            if (box.style.display === "block") document.getElementById("searchInput").focus();
         }
 
-        async function fetchFromApi(endpoint, genreId = '', lang = 'ar-AR') {
+        async function fetchFromApi(endpoint, genreId = '', dummy = '', country = '') {
             const grid = document.getElementById('movies-grid');
-            grid.innerHTML = '<p style="color:white; padding:20px;">جاري تحميل المحتوى...</p>';
-            let url = `${BASE_URL}/${endpoint}?api_key=${API_KEY}&language=${lang}&append_to_response=images&include_image_language=en,null`;
-            if(genreId) url += `&with_genres=${genreId}`;
+            grid.innerHTML = '<div id="loading">جاري تحميل المحتوى...</div>';
+
+            let url = `${BASE_URL}/${endpoint}?api_key=${API_KEY}&language=${DEFAULT_LANG}`;
+            if (genreId)   url += `&with_genres=${genreId}`;
+            if (country)   url += `&with_origin_country=${country}`;
 
             try {
-                const response = await fetch(url);
-                const data = await response.json();
-                displayResults(data.results);
-            } catch(e) { grid.innerHTML = '<p>خطأ في جلب البيانات</p>'; }
+                const res = await fetch(url);
+                if (!res.ok) throw new Error('مشكلة في الاتصال');
+                const data = await res.json();
+                displayResults(data.results || []);
+            } catch (e) {
+                grid.innerHTML = `<div id="error">خطأ في جلب البيانات<br>${e.message}</div>`;
+            }
             closeNav();
         }
 
-        async function displayResults(results) {
+        async function searchFromApi(query) {
+            if (!query.trim()) return;
             const grid = document.getElementById('movies-grid');
-            grid.innerHTML = '';
-            
-            for(const item of results) {
-                if(!item.poster_path) continue;
-                let posterSrc = IMG_URL + item.poster_path;
-                try {
-                    const imgRes = await fetch(`${BASE_URL}/${item.title ? 'movie' : 'tv'}/${item.id}/images?api_key=${API_KEY}&include_image_language=en`);
-                    const imgData = await imgRes.json();
-                    if(imgData.posters && imgData.posters.length > 0) {
-                        posterSrc = IMG_URL + imgData.posters[0].file_path;
-                    }
-                } catch(e) {}
+            grid.innerHTML = '<div id="loading">جاري البحث...</div>';
 
-                grid.innerHTML += `
-                    <div class="movie-card">
-                        <img src="${posterSrc}" loading="lazy">
-                        <a href="movie.html?id=${item.id}&type=${item.title ? 'movie' : 'tv'}" class="watch-btn">شاهد الآن</a>
-                    </div>`;
+            const url = `${BASE_URL}/search/multi?api_key=${API_KEY}&language=${DEFAULT_LANG}&query=${encodeURIComponent(query)}`;
+
+            try {
+                const res = await fetch(url);
+                if (!res.ok) throw new Error('مشكلة في البحث');
+                const data = await res.json();
+                displayResults(data.results || []);
+            } catch (e) {
+                grid.innerHTML = `<div id="error">خطأ في البحث<br>${e.message}</div>`;
             }
         }
 
+        function displayResults(results) {
+            const grid = document.getElementById('movies-grid');
+            grid.innerHTML = '';
+
+            if (results.length === 0) {
+                grid.innerHTML = '<div id="error" style="padding:40px;">لا توجد نتائج متاحة حالياً</div>';
+                return;
+            }
+
+            results.forEach(item => {
+                if (!item.poster_path) return;
+                const isMovie = !!item.title;
+                const title = item.title || item.name || 'غير معروف';
+                const year = (item.release_date || item.first_air_date || '').slice(0,4) || '—';
+
+                grid.innerHTML += `
+                    <div class="movie-card">
+                        <img src="${IMG_URL + item.poster_path}" loading="lazy" alt="${title}">
+                        <div class="movie-info">
+                            <strong>${title}</strong>
+                            <small>${year}</small>
+                        </div>
+                        <a href="movie.html?id=${item.id}&type=${isMovie ? 'movie' : 'tv'}" class="watch-btn">شاهد الآن</a>
+                    </div>`;
+            });
+        }
+
+        // تحميل الصفحة الرئيسية عند الفتح
         fetchFromApi('movie/popular');
     </script>
 </body>
