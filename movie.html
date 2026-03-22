@@ -1,40 +1,38 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WatchGo - Movie Details</title>
+    <title>تفاصيل العمل - WatchGo</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        /* الحفاظ على نفس التنسيقات اللي ظبطت الواجهة عندك */
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        
         :root { --primary: #9b51e0; --bg: #050505; --text: #ffffff; --imdb-gold: #f5c518; }
         
         body { 
             background-color: var(--bg); 
             color: var(--text); 
-            font-family: 'Segoe UI', sans-serif; 
+            font-family: 'Segoe UI', Tahoma, sans-serif; 
             overflow-x: hidden; 
-            line-height: 1.4;
         }
 
+        /* الخلفية السينمائية اللي طلبت متتغيرش */
         .hero-section {
             position: relative;
             width: 100%;
             min-height: 100vh;
             background-size: cover;
-            background-position: center top;
+            background-position: center 20%;
             background-attachment: fixed;
             display: flex;
             justify-content: center;
-            padding: 40px 5%;
+            padding: 50px 5%;
         }
 
         .hero-overlay {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle at center, rgba(5,5,5,0.4) 0%, rgba(5,5,5,0.85) 60%, rgba(5,5,5,1) 100%);
+            background: linear-gradient(to bottom, rgba(5,5,5,0.5) 0%, rgba(5,5,5,0.9) 70%, rgba(5,5,5,1) 100%);
             z-index: 1;
         }
 
@@ -42,73 +40,102 @@
             position: relative;
             z-index: 2;
             display: grid; 
-            grid-template-columns: 280px 1fr 250px; 
-            gap: 30px; 
+            grid-template-columns: 300px 1fr; 
+            gap: 40px; 
             width: 100%;
             max-width: 1400px;
-            align-items: start;
         }
 
-        .poster-container { text-align: center; }
+        /* تنسيق البوستر والزراير الجانبية */
+        .side-panel { display: flex; flex-direction: column; gap: 20px; }
         .poster { 
             width: 100%; 
-            border-radius: 12px; 
+            border-radius: 10px; 
             border: 2px solid var(--primary); 
-            box-shadow: 0 8px 30px rgba(0,0,0,0.8);
+            box-shadow: 0 0 30px rgba(155, 81, 224, 0.3);
         }
 
-        .poster-meta { display: flex; gap: 10px; margin-top: 12px; justify-content: center; }
-        .imdb-badge { background: var(--imdb-gold); color: #000; padding: 4px 10px; border-radius: 4px; font-weight: bold; font-size: 13px; }
-
-        .info-section h1 { font-size: 38px; margin-bottom: 10px; text-shadow: 0 2px 10px rgba(0,0,0,1); }
-        .label-title { color: var(--primary); font-weight: bold; margin-bottom: 5px; font-size: 16px; display: block; }
-        .overview { color: #ddd; font-size: 15px; margin-bottom: 20px; max-width: 900px; }
-
-        .cast-scroll { 
-            display: flex; 
-            gap: 12px; 
-            overflow-x: auto; 
-            padding-bottom: 10px; 
-            scrollbar-width: none; 
-        }
-        .cast-item { min-width: 80px; text-align: center; }
-        .cast-item img { width: 65px; height: 65px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary); }
-        .cast-item div { font-size: 11px; margin-top: 5px; color: #bbb; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
-        .details-grid { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
-            gap: 15px; 
-            margin-top: 25px;
-            background: rgba(255, 255, 255, 0.05);
+        .main-btn {
+            background: var(--primary);
+            color: white;
             padding: 15px;
-            border-radius: 10px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-size: 16px;
+            transition: 0.3s;
+        }
+        .main-btn.watch { background: #e91e63; } /* لون مميز للمشاهدة زي الصور */
+        .main-btn.download { background: #2196f3; } /* لون مميز للتحميل */
+        .main-btn:hover { transform: scale(1.03); filter: brightness(1.1); }
+
+        /* منطقة المعلومات */
+        .content-panel h1 { 
+            font-size: 45px; 
+            margin-bottom: 20px; 
+            color: var(--text); 
+            font-family: 'Arial', sans-serif; /* عشان الاسم الإنجليزي يبقى واضح */
+            text-align: right; 
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--primary);
+            font-size: 20px;
+            margin: 25px 0 10px;
+            font-weight: bold;
+        }
+        .section-title i { font-size: 24px; }
+
+        .overview { 
+            font-size: 17px; 
+            line-height: 1.8; 
+            color: #ccc; 
+            background: rgba(255,255,255,0.05);
+            padding: 15px;
+            border-radius: 8px;
+            border-right: 4px solid var(--primary);
+        }
+
+        /* شبكة التفاصيل زي المواقع الاحترافية */
+        .details-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .detail-card {
+            background: rgba(20, 20, 20, 0.6);
+            padding: 12px 15px;
+            border-radius: 6px;
             border: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
-        .detail-item { display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.05); padding: 8px 0; }
-        .detail-item:last-child { border: none; }
-        .detail-item span:first-child { color: var(--primary); font-weight: bold; }
+        .detail-card span:first-child { color: var(--primary); font-weight: bold; display: flex; align-items: center; gap: 8px; }
+        .detail-card span:last-child { color: #fff; font-size: 14px; }
 
-        .action-panel { display: flex; flex-direction: column; gap: 12px; }
-        .btn { 
-            background: var(--primary); color: white; padding: 14px; text-align: center; 
-            border-radius: 8px; text-decoration: none; font-weight: bold; transition: 0.3s; 
-            border: none; cursor: pointer; font-size: 15px;
-        }
-        .btn.secondary { background: rgba(255,255,255,0.1); border: 1px solid #444; }
-        .btn:hover { transform: translateY(-2px); opacity: 0.9; }
+        /* طاقم العمل */
+        .cast-row { display: flex; gap: 15px; overflow-x: auto; padding: 10px 0; scrollbar-width: none; }
+        .cast-box { min-width: 90px; text-align: center; }
+        .cast-box img { width: 70px; height: 70px; border-radius: 50%; border: 2px solid var(--primary); object-fit: cover; }
+        .cast-box div { font-size: 12px; margin-top: 5px; color: #bbb; }
 
-        /* تظبيط الموبايل مع مراعاة طلبك بعدم تغيير واجهة اللاب */
-        @media (max-width: 1024px) {
-            .movie-layout { grid-template-columns: 250px 1fr; }
-        }
-
-        @media (max-width: 768px) {
-            .hero-section { padding: 20px; }
-            .movie-layout { display: flex; flex-direction: column; align-items: center; text-align: center; }
-            .info-section h1 { font-size: 28px; }
-            .details-grid { width: 100%; }
-            .cast-scroll { justify-content: center; }
+        @media (max-width: 900px) {
+            .movie-layout { grid-template-columns: 1fr; }
+            .content-panel h1 { font-size: 30px; text-align: center; }
+            .side-panel { align-items: center; }
+            .poster { max-width: 250px; }
+            .details-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -118,76 +145,97 @@
         <div class="hero-overlay"></div>
         
         <div class="movie-layout">
-            <div class="poster-container">
+            <div class="side-panel">
                 <img src="" id="poster" class="poster">
-                <div class="poster-meta">
-                    <div class="imdb-badge" id="imdbRate"><i class="fa-solid fa-star"></i> --</div>
-                    <div style="font-weight: bold;" id="detYear">----</div>
-                </div>
-                <div style="margin-top: 15px; display: flex; flex-direction: column; gap: 8px;">
-                    <button class="btn secondary" style="font-size: 13px;"><i class="fa-solid fa-heart"></i> Add to Favorites</button>
-                    <button class="btn secondary" style="font-size: 13px;"><i class="fa-solid fa-clock"></i> Watch Later</button>
+                <button class="main-btn watch"><i class="fa-solid fa-play"></i> مشاهدة الآن</button>
+                <button class="main-btn download"><i class="fa-solid fa-download"></i> تحميل الآن</button>
+                <div style="display: flex; gap: 10px;">
+                    <button class="main-btn" style="flex:1; background:#333;"><i class="fa-solid fa-heart"></i></button>
+                    <button class="main-btn" style="flex:1; background:#333;"><i class="fa-solid fa-share"></i></button>
                 </div>
             </div>
 
-            <div class="info-section">
-                <h1 id="movieTitle">Loading...</h1>
-                
-                <span class="label-title">Synopsis</span>
-                <p id="movieOverview" class="overview">...</p>
-                
-                <span class="label-title">Cast</span>
-                <div id="castContainer" class="cast-scroll"></div>
-
+            <div class="content-panel">
+                <h1 id="movieTitleEN">Movie Title</h1> <div class="section-title"><i class="fa-solid fa-quote-right"></i> قصة الفيلم</div>
+                <p id="movieOverviewAR" class="overview">...</p> <div class="section-title"><i class="fa-solid fa-circle-info"></i> تفاصيل الفيلم</div>
                 <div class="details-grid">
-                    <div class="detail-item"><span>Category</span><span id="detCategory">---</span></div>
-                    <div class="detail-item"><span>Genre</span><span id="detGenre">---</span></div>
-                    <div class="detail-item"><span>Runtime</span><span id="detRuntime">-- min</span></div>
-                    <div class="detail-item"><span>Language</span><span id="detLang">--</span></div>
+                    <div class="detail-card">
+                        <span><i class="fa-solid fa-layer-group"></i> القسم:</span>
+                        <span id="detCategory">أفلام</span>
+                    </div>
+                    <div class="detail-card">
+                        <span><i class="fa-solid fa-masks-theater"></i> النوع:</span>
+                        <span id="detGenre">---</span>
+                    </div>
+                    <div class="detail-card">
+                        <span><i class="fa-solid fa-clock"></i> التوقيت:</span>
+                        <span id="detRuntime">-- دقيقة</span>
+                    </div>
+                    <div class="detail-card">
+                        <span><i class="fa-solid fa-calendar-days"></i> موعد الصدور:</span>
+                        <span id="detYear">----</span>
+                    </div>
+                    <div class="detail-card">
+                        <span><i class="fa-solid fa-star" style="color:var(--imdb-gold)"></i> التقييم:</span>
+                        <span id="imdbRate">-- / 10</span>
+                    </div>
+                    <div class="detail-card">
+                        <span><i class="fa-solid fa-language"></i> اللغة الأصلية:</span>
+                        <span id="detLang">--</span>
+                    </div>
                 </div>
-            </div>
 
-            <div class="action-panel">
-                <button class="btn"><i class="fa-solid fa-play"></i> Watch Now</button>
-                <button class="btn secondary"><i class="fa-solid fa-download"></i> Download</button>
-                <button id="trailerLink" class="btn secondary" style="color: #ff4d4d; border-color: #ff4d4d;"><i class="fa-brands fa-youtube"></i> Trailer</button>
+                <div class="section-title"><i class="fa-solid fa-users"></i> طاقم العمل</div>
+                <div id="castContainer" class="cast-row"></div>
             </div>
         </div>
     </div>
 
     <script>
         const API_KEY = 'b838a848a571a893e6b0effe4bd53db8';
-        const IMG_URL = 'https://image.tmdb.org/t/p/w500';
-        const BG_URL = 'https://image.tmdb.org/t/p/original';
         const params = new URLSearchParams(window.location.search);
         const movieId = params.get('id');
         const type = params.get('type') || 'movie';
 
-        async function fetchDetails() {
+        async function fetchAllData() {
             if(!movieId) return;
-            // تم تغيير اللغة هنا إلى الإنجليزية en-US
-            const res = await fetch(`https://api.themoviedb.org/3/${type}/${movieId}?api_key=${API_KEY}&language=en-US&append_to_response=credits,videos`);
-            const data = await res.json();
 
-            document.getElementById('movieTitle').innerText = data.title || data.name;
-            document.getElementById('movieOverview').innerText = data.overview || "No synopsis available.";
-            document.getElementById('poster').src = IMG_URL + data.poster_path;
-            document.getElementById('heroSection').style.backgroundImage = `url(${BG_URL + data.backdrop_path})`;
-            document.getElementById('imdbRate').innerHTML = `<i class="fa-solid fa-star"></i> ${data.vote_average.toFixed(1)}`;
-            document.getElementById('detYear').innerText = (data.release_date || data.first_air_date || '').split('-')[0];
-            document.getElementById('detCategory').innerText = type === 'movie' ? 'Movies' : 'TV Series';
-            document.getElementById('detGenre').innerText = data.genres.slice(0, 2).map(g => g.name).join(' / ');
-            document.getElementById('detRuntime').innerText = (data.runtime || (data.episode_run_time ? data.episode_run_time[0] : '--')) + ' min';
-            document.getElementById('detLang').innerText = data.original_language.toUpperCase();
+            // سحب البيانات بالعربي للوصف
+            const resAR = await fetch(`https://api.themoviedb.org/3/${type}/${movieId}?api_key=${API_KEY}&language=ar-SA`);
+            const dataAR = await resAR.json();
 
+            // سحب البيانات بالإنجليزي للعنوان والبوستر
+            const resEN = await fetch(`https://api.themoviedb.org/3/${type}/${movieId}?api_key=${API_KEY}&language=en-US&append_to_response=credits`);
+            const dataEN = await resEN.json();
+
+            // تطبيق البيانات
+            document.getElementById('movieTitleEN').innerText = dataEN.title || dataEN.name;
+            document.getElementById('movieOverviewAR').innerText = dataAR.overview || "لا يوجد وصف متاح حالياً.";
+            document.getElementById('poster').src = 'https://image.tmdb.org/t/p/w500' + dataEN.poster_path;
+            document.getElementById('heroSection').style.backgroundImage = `url(https://image.tmdb.org/t/p/original${dataEN.backdrop_path})`;
+            
+            // التفاصيل بالعربي
+            document.getElementById('detCategory').innerText = type === 'movie' ? 'أفلام أجنبي' : 'مسلسلات أجنبي';
+            document.getElementById('detGenre').innerText = dataAR.genres.map(g => g.name).join(' / ');
+            document.getElementById('detRuntime').innerText = (dataEN.runtime || dataEN.episode_run_time?.[0] || '--') + ' دقيقة';
+            document.getElementById('detYear').innerText = (dataEN.release_date || dataEN.first_air_date || '').split('-')[0];
+            document.getElementById('imdbRate').innerText = dataEN.vote_average.toFixed(1) + ' / 10';
+            document.getElementById('detLang').innerText = dataEN.original_language.toUpperCase();
+
+            // طاقم العمل
             const castCont = document.getElementById('castContainer');
-            data.credits.cast.slice(0, 8).forEach(c => {
+            dataEN.credits.cast.slice(0, 10).forEach(c => {
                 if(c.profile_path) {
-                    castCont.innerHTML += `<div class="cast-item"><img src="${IMG_URL + c.profile_path}"><div>${c.name}</div></div>`;
+                    castCont.innerHTML += `
+                        <div class="cast-box">
+                            <img src="https://image.tmdb.org/t/p/w200${c.profile_path}">
+                            <div>${c.name}</div>
+                        </div>`;
                 }
             });
         }
-        fetchDetails();
+
+        fetchAllData();
     </script>
 </body>
 </html>
