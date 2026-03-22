@@ -166,31 +166,48 @@
         .cast-item img { width: 85px; height: 85px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary); box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
         .cast-item p { font-size: 13px; margin-top: 10px; color: #bbb; }
 
-        /* --- نظام المواسم والحلقات (الاحترافي) --- */
+        /* --- نظام المواسم والحلقات (الأزرار المدورة والشبكة الكاملة) --- */
         .series-container { margin-top: 50px; width: 100%; animation: fadeInUp 1s; }
         .seasons-tabs { display: flex; gap: 15px; overflow-x: auto; padding: 10px 0; scrollbar-width: none; }
         .season-tab {
-            background: var(--glass); padding: 15px 30px; border-radius: 12px; cursor: pointer;
-            border: 1px solid rgba(255,255,255,0.1); transition: 0.4s; font-weight: bold;
+            background: var(--glass); padding: 12px 25px; border-radius: 12px; cursor: pointer;
+            border: 1px solid rgba(255,255,255,0.1); transition: 0.4s; font-weight: bold; white-space: nowrap;
         }
         .season-tab.active { background: var(--primary); box-shadow: 0 0 20px var(--shadow-purple); border-color: var(--primary); }
 
+        /* شبكة أزرار الحلقات المعدلة */
         .episodes-grid { 
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); 
-            gap: 25px; margin-top: 30px; 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); /* توزيع يملأ الشاشة */
+            gap: 15px; 
+            margin-top: 25px; 
+            width: 100%;
+            justify-content: start; /* البداية من اليمين */
         }
-        .episode-card {
-            background: var(--glass); border-radius: 15px; overflow: hidden;
-            border: 1px solid rgba(255,255,255,0.05); backdrop-filter: blur(15px);
-            transition: 0.5s; cursor: pointer;
+        .episode-btn {
+            background: linear-gradient(145deg, #9b51e0, #7a3eb1);
+            color: white;
+            width: 100px; /* جعلها متساوية الأبعاد */
+            height: 100px;
+            border-radius: 50%; /* تحويلها لشكل مدور تماماً */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            font-weight: bold;
+            border: 2px solid rgba(255,255,255,0.2);
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+            text-decoration: none;
         }
-        .episode-card:hover { transform: scale(1.03); border-color: var(--primary); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .episode-img-box { position: relative; height: 170px; }
-        .episode-img { width: 100%; height: 100%; object-fit: cover; }
-        .episode-play-icon { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 40px; color: white; opacity: 0; transition: 0.3s; }
-        .episode-card:hover .episode-play-icon { opacity: 1; }
-        .episode-info { padding: 18px; }
-        .ep-num { color: var(--primary); font-weight: bold; font-size: 14px; margin-bottom: 5px; }
+        .episode-btn:hover {
+            transform: scale(1.15) rotate(10deg);
+            box-shadow: 0 0 25px var(--primary);
+            border-color: #fff;
+        }
+        .ep-label { font-size: 11px; opacity: 0.9; margin-bottom: 2px; }
+        .ep-number-big { font-size: 20px; }
 
         /* --- المتشابهات --- */
         .related-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 15px; margin-top: 25px; }
@@ -206,6 +223,7 @@
             .section-header { justify-content: center; border-right: none; border-bottom: 2px solid var(--primary); padding-bottom: 5px; }
             .details-grid { grid-template-columns: 1fr; }
             .related-grid { grid-template-columns: repeat(3, 1fr); }
+            .episodes-grid { justify-content: center; } /* توسيط في الموبايل */
         }
     </style>
 </head>
@@ -271,7 +289,6 @@
         async function fetchAll() {
             if(!movieId) return;
 
-            // جلب البيانات (عربي وإنجليزي ومتشابهات)
             const [resAR, resEN, resRelated] = await Promise.all([
                 fetch(`https://api.themoviedb.org/3/${type}/${movieId}?api_key=${API_KEY}&language=ar-SA`),
                 fetch(`https://api.themoviedb.org/3/${type}/${movieId}?api_key=${API_KEY}&language=en-US&append_to_response=credits,videos`),
@@ -282,7 +299,6 @@
             const dEN = await resEN.json();
             const dRel = await resRelated.json();
 
-            // تعبئة البيانات
             document.getElementById('movieTitleEN').innerText = dEN.title || dEN.name;
             document.getElementById('movieOverviewAR').innerText = dAR.overview || "قريباً..";
             document.getElementById('poster').src = 'https://image.tmdb.org/t/p/w500' + dEN.poster_path;
@@ -295,7 +311,6 @@
             document.getElementById('imdbRate').innerText = dEN.vote_average.toFixed(1) + ' / 10';
             document.getElementById('detLang').innerText = dEN.original_language.toUpperCase();
 
-            // طاقم العمل
             const castCont = document.getElementById('castContainer');
             dEN.credits.cast.slice(0, 12).forEach(c => {
                 if(c.profile_path) {
@@ -303,7 +318,6 @@
                 }
             });
 
-            // المتشابهات
             const relGrid = document.getElementById('relatedGrid');
             dRel.results.slice(0, 6).forEach(item => {
                 if(item.poster_path) {
@@ -311,7 +325,6 @@
                 }
             });
 
-            // التريلر
             const trailer = dEN.videos.results.find(v => v.type === 'Trailer');
             if(trailer) {
                 document.getElementById('openTrailer').onclick = () => {
@@ -320,7 +333,6 @@
                 };
             } else { document.getElementById('openTrailer').style.display = 'none'; }
 
-            // تفعيل نظام المسلسلات
             if(type === 'tv') {
                 document.getElementById('seriesSection').style.display = 'block';
                 setupSeasons(dEN.seasons);
@@ -351,17 +363,10 @@
             const data = await res.json();
             grid.innerHTML = '';
             data.episodes.forEach(ep => {
-                const img = ep.still_path ? `https://image.tmdb.org/t/p/w300${ep.still_path}` : 'https://via.placeholder.com/300x170/111/9b51e0?text=WatchGo';
                 grid.innerHTML += `
-                    <div class="episode-card" style="animation: slideInRight 0.5s ease backwards">
-                        <div class="episode-img-box">
-                            <img src="${img}" class="episode-img">
-                            <i class="fa-solid fa-circle-play episode-play-icon"></i>
-                        </div>
-                        <div class="episode-info">
-                            <div class="ep-num">الحلقة ${ep.episode_number}</div>
-                            <div class="ep-title">${ep.name}</div>
-                        </div>
+                    <div class="episode-btn" style="animation: slideInRight 0.4s ease forwards">
+                        <span class="ep-label">الحلقة</span>
+                        <span class="ep-number-big">${ep.episode_number}</span>
                     </div>`;
             });
         }
