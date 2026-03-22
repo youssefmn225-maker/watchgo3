@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تفاصيل العمل - WatchGo</title>
+    <title>WatchGo - Movie Details</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        /* نظام تصفير المسافات ومنع السكرول العرضي */
+        /* الحفاظ على نفس التنسيقات اللي ظبطت الواجهة عندك */
         * { box-sizing: border-box; margin: 0; padding: 0; }
         
         :root { --primary: #9b51e0; --bg: #050505; --text: #ffffff; --imdb-gold: #f5c518; }
@@ -19,13 +19,12 @@
             line-height: 1.4;
         }
 
-        /* الخلفية السينمائية الثابتة */
         .hero-section {
             position: relative;
             width: 100%;
             min-height: 100vh;
             background-size: cover;
-            background-position: center 20%;
+            background-position: center top;
             background-attachment: fixed;
             display: flex;
             justify-content: center;
@@ -39,19 +38,17 @@
             z-index: 1;
         }
 
-        /* تنسيق توزيع العناصر - Grid متوازن */
         .movie-layout { 
             position: relative;
             z-index: 2;
             display: grid; 
-            grid-template-columns: 280px 1fr 250px; /* تقليل عرض البوستر والزراير لترك مساحة للمحتوى */
+            grid-template-columns: 280px 1fr 250px; 
             gap: 30px; 
             width: 100%;
             max-width: 1400px;
             align-items: start;
         }
 
-        /* البوستر */
         .poster-container { text-align: center; }
         .poster { 
             width: 100%; 
@@ -63,12 +60,10 @@
         .poster-meta { display: flex; gap: 10px; margin-top: 12px; justify-content: center; }
         .imdb-badge { background: var(--imdb-gold); color: #000; padding: 4px 10px; border-radius: 4px; font-weight: bold; font-size: 13px; }
 
-        /* معلومات العمل - Info Section */
         .info-section h1 { font-size: 38px; margin-bottom: 10px; text-shadow: 0 2px 10px rgba(0,0,0,1); }
         .label-title { color: var(--primary); font-weight: bold; margin-bottom: 5px; font-size: 16px; display: block; }
         .overview { color: #ddd; font-size: 15px; margin-bottom: 20px; max-width: 900px; }
 
-        /* طاقم العمل - Cast */
         .cast-scroll { 
             display: flex; 
             gap: 12px; 
@@ -80,7 +75,6 @@
         .cast-item img { width: 65px; height: 65px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary); }
         .cast-item div { font-size: 11px; margin-top: 5px; color: #bbb; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-        /* صندوق التفاصيل - المربعات اللي كانت مش ظاهرة */
         .details-grid { 
             display: grid; 
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
@@ -95,7 +89,6 @@
         .detail-item:last-child { border: none; }
         .detail-item span:first-child { color: var(--primary); font-weight: bold; }
 
-        /* زراير التحكم */
         .action-panel { display: flex; flex-direction: column; gap: 12px; }
         .btn { 
             background: var(--primary); color: white; padding: 14px; text-align: center; 
@@ -105,11 +98,9 @@
         .btn.secondary { background: rgba(255,255,255,0.1); border: 1px solid #444; }
         .btn:hover { transform: translateY(-2px); opacity: 0.9; }
 
-        /* تظبيط الموبايل (Responsive) */
+        /* تظبيط الموبايل مع مراعاة طلبك بعدم تغيير واجهة اللاب */
         @media (max-width: 1024px) {
             .movie-layout { grid-template-columns: 250px 1fr; }
-            .action-panel { grid-column: span 2; flex-direction: row; }
-            .btn { flex: 1; }
         }
 
         @media (max-width: 768px) {
@@ -134,32 +125,32 @@
                     <div style="font-weight: bold;" id="detYear">----</div>
                 </div>
                 <div style="margin-top: 15px; display: flex; flex-direction: column; gap: 8px;">
-                    <button class="btn secondary" style="font-size: 13px;"><i class="fa-solid fa-heart"></i> المفضلة</button>
-                    <button class="btn secondary" style="font-size: 13px;"><i class="fa-solid fa-clock"></i> لاحقاً</button>
+                    <button class="btn secondary" style="font-size: 13px;"><i class="fa-solid fa-heart"></i> Add to Favorites</button>
+                    <button class="btn secondary" style="font-size: 13px;"><i class="fa-solid fa-clock"></i> Watch Later</button>
                 </div>
             </div>
 
             <div class="info-section">
-                <h1 id="movieTitle">جاري التحميل...</h1>
+                <h1 id="movieTitle">Loading...</h1>
                 
-                <span class="label-title">قصة العمل</span>
+                <span class="label-title">Synopsis</span>
                 <p id="movieOverview" class="overview">...</p>
                 
-                <span class="label-title">طاقم العمل</span>
+                <span class="label-title">Cast</span>
                 <div id="castContainer" class="cast-scroll"></div>
 
                 <div class="details-grid">
-                    <div class="detail-item"><span>القسم</span><span id="detCategory">---</span></div>
-                    <div class="detail-item"><span>النوع</span><span id="detGenre">---</span></div>
-                    <div class="detail-item"><span>التوقيت</span><span id="detRuntime">-- دقيقة</span></div>
-                    <div class="detail-item"><span>اللغة</span><span id="detLang">--</span></div>
+                    <div class="detail-item"><span>Category</span><span id="detCategory">---</span></div>
+                    <div class="detail-item"><span>Genre</span><span id="detGenre">---</span></div>
+                    <div class="detail-item"><span>Runtime</span><span id="detRuntime">-- min</span></div>
+                    <div class="detail-item"><span>Language</span><span id="detLang">--</span></div>
                 </div>
             </div>
 
             <div class="action-panel">
-                <button class="btn"><i class="fa-solid fa-play"></i> مشاهدة الآن</button>
-                <button class="btn secondary"><i class="fa-solid fa-download"></i> تحميل</button>
-                <button id="trailerLink" class="btn secondary" style="color: #ff4d4d; border-color: #ff4d4d;"><i class="fa-brands fa-youtube"></i> التريلر</button>
+                <button class="btn"><i class="fa-solid fa-play"></i> Watch Now</button>
+                <button class="btn secondary"><i class="fa-solid fa-download"></i> Download</button>
+                <button id="trailerLink" class="btn secondary" style="color: #ff4d4d; border-color: #ff4d4d;"><i class="fa-brands fa-youtube"></i> Trailer</button>
             </div>
         </div>
     </div>
@@ -174,22 +165,21 @@
 
         async function fetchDetails() {
             if(!movieId) return;
-            const res = await fetch(`https://api.themoviedb.org/3/${type}/${movieId}?api_key=${API_KEY}&language=ar-AR&append_to_response=credits,videos`);
+            // تم تغيير اللغة هنا إلى الإنجليزية en-US
+            const res = await fetch(`https://api.themoviedb.org/3/${type}/${movieId}?api_key=${API_KEY}&language=en-US&append_to_response=credits,videos`);
             const data = await res.json();
 
-            // تعبئة البيانات
             document.getElementById('movieTitle').innerText = data.title || data.name;
-            document.getElementById('movieOverview').innerText = data.overview || "لا يوجد وصف حالياً.";
+            document.getElementById('movieOverview').innerText = data.overview || "No synopsis available.";
             document.getElementById('poster').src = IMG_URL + data.poster_path;
             document.getElementById('heroSection').style.backgroundImage = `url(${BG_URL + data.backdrop_path})`;
             document.getElementById('imdbRate').innerHTML = `<i class="fa-solid fa-star"></i> ${data.vote_average.toFixed(1)}`;
             document.getElementById('detYear').innerText = (data.release_date || data.first_air_date || '').split('-')[0];
-            document.getElementById('detCategory').innerText = type === 'movie' ? 'أفلام' : 'مسلسلات';
+            document.getElementById('detCategory').innerText = type === 'movie' ? 'Movies' : 'TV Series';
             document.getElementById('detGenre').innerText = data.genres.slice(0, 2).map(g => g.name).join(' / ');
-            document.getElementById('detRuntime').innerText = (data.runtime || (data.episode_run_time ? data.episode_run_time[0] : '--')) + ' دقيقة';
+            document.getElementById('detRuntime').innerText = (data.runtime || (data.episode_run_time ? data.episode_run_time[0] : '--')) + ' min';
             document.getElementById('detLang').innerText = data.original_language.toUpperCase();
 
-            // الممثلين
             const castCont = document.getElementById('castContainer');
             data.credits.cast.slice(0, 8).forEach(c => {
                 if(c.profile_path) {
