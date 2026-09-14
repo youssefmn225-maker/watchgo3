@@ -1,0 +1,81 @@
+/* منع الهزة والتحرك يمين وشمال */
+html, body {
+    overflow-x: hidden;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.hero-section {
+    padding: 20px 10px !important;
+    background-attachment: scroll !important; /* أحسن لأداء الموبايل */
+}
+
+/* إلغاء نظام الأعمدة بتاع الديسك توب */
+.movie-layout {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    width: 100% !important;
+    gap: 20px !important;
+}
+
+/* البوستر */
+.side-panel {
+    width: 100% !important;
+    align-items: center !important;
+}
+
+.poster {
+    max-width: 200px !important;
+    box-shadow: 0 0 20px var(--primary) !important;
+}
+
+.content-panel {
+    width: 100% !important;
+}
+
+.content-panel h1 {
+    font-size: 26px !important;
+    text-align: center;
+}
+
+.overview {
+    padding: 15px !important;
+    font-size: 15px !important;
+    line-height: 1.5 !important;
+}
+
+/* --- نظام الكرتين للمواسم والحلقات والفيلم --- */
+#seasonsGrid, #episodesGrid, #relatedGrid {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important; /* كرتين جنب بعض */
+    gap: 12px !important;
+    width: 100% !important;
+}
+
+/* كروت الحلقات (عرضية) */
+#episodesGrid img {
+    height: 110px !important;
+}
+
+/* كروت المواسم والشبيهة */
+#seasonsGrid img, #relatedGrid img {
+    height: 220px !important;
+}
+
+/* ضبط الممثلين */
+.cast-item {
+    min-width: 80px !important;
+}
+
+.cast-item img {
+    width: 65px !important;
+    height: 65px !important;
+}
+
+/* أزرار المشاهدة */
+.btn {
+    width: 90% !important;
+    font-size: 14px !important;
+}

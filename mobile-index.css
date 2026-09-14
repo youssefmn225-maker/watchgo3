@@ -1,0 +1,91 @@
+/* منع الحركة الأفقية نهائياً */
+html, body {
+    overflow-x: hidden;
+    width: 100%;
+    position: relative;
+    margin: 0;
+    padding: 0;
+}
+
+/* ضبط الهيدر للموبايل */
+.header {
+    padding: 0 15px !important;
+    height: 60px !important;
+}
+
+.main-nav {
+    display: none !important; /* إخفاء منيو الديسك توب */
+}
+
+/* السلايدر للموبايل */
+#heroSection {
+    height: 280px !important;
+}
+
+.slide-overlay {
+    padding: 0 20px !important;
+    text-align: center;
+    align-items: center;
+}
+
+.slide-title {
+    font-size: 22px !important;
+}
+
+/* الحاوية الأساسية */
+.container {
+    display: block !important; /* إلغاء الـ Grid بتاع الديسك توب */
+    padding: 15px 10px !important;
+    width: 100% !important;
+    box-sizing: border-box;
+}
+
+/* إخفاء السايد بار */
+.sidebar {
+    display: none !important;
+}
+
+/* --- نظام الكرتين جنب بعض --- */
+.grid-display {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important; /* كرتين بالظبط */
+    gap: 12px !important;
+    width: 100% !important;
+    padding: 0 !important;
+}
+
+.item-card {
+    width: 100% !important;
+    margin: 0 !important;
+}
+
+.item-card img {
+    height: 220px !important; /* طول الكرت */
+    width: 100%;
+    object-fit: cover;
+}
+
+.item-name {
+    font-size: 11px !important;
+}
+
+/* ضبط بوكس البحث */
+#searchBox input {
+    width: 90% !important;
+}
+/* ضبط زر المنيو في الموبايل */
+.header-icons {
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+}
+
+.menu-circle-btn {
+    width: 36px !important;
+    height: 36px !important;
+    margin-right: 0 !important;
+}
+
+.menu-circle-btn i {
+    font-size: 16px !important;
+}

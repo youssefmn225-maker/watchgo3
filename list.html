@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>قائمتي - WatchGo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body { background: #050505; color: white; font-family: sans-serif; margin: 0; padding: 20px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 20px; max-width: 1200px; margin: auto; }
+        .card { background: #121212; border-radius: 12px; overflow: hidden; border: 1px solid #333; transition: 0.3s; }
+        .card img { width: 100%; height: 200px; object-fit: cover; }
+        .card h3 { font-size: 14px; padding: 10px; margin: 0; text-align: center; }
+        .btn-remove { background: #b00; color: white; border: none; padding: 8px; width: 100%; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <h1 id="listTitle" style="text-align: center; color: #9b51e0;">قائمتي</h1>
+    <div class="grid" id="listGrid"></div>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const listName = params.get('type'); // هيجيب 'favorites' أو 'watchLater'
+        
+        function loadList() {
+            const list = JSON.parse(localStorage.getItem(listName) || "[]");
+            const grid = document.getElementById('listGrid');
+            document.getElementById('listTitle').innerText = listName === 'favorites' ? 'المفضلة' : 'مشاهدة لاحقاً';
+            
+            grid.innerHTML = list.length > 0 ? '' : '<p style="text-align:center; width:100%;">القائمة فارغة حالياً</p>';
+            
+            list.forEach((item, index) => {
+                grid.innerHTML += `
+                    <div class="card">
+                        <img src="https://image.tmdb.org/t/p/w500${item.poster}">
+                        <h3>${item.title}</h3>
+                        <button class="btn-remove" onclick="removeFromList(${index})">حذف</button>
+                    </div>`;
+            });
+        }
+
+        function removeFromList(index) {
+            let list = JSON.parse(localStorage.getItem(listName));
+            list.splice(index, 1);
+            localStorage.setItem(listName, JSON.stringify(list));
+            loadList();
+        }
+
+        loadList();
+    </script>
+</body>
+</html>
