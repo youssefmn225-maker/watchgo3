@@ -75,7 +75,14 @@
         .grid-display { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 20px; }
         .item-card { background: var(--card-bg); border-radius: 8px; overflow: visible; border: 1px solid var(--border-color); transition: 0.4s ease; cursor: pointer; position: relative; z-index: 1; }
         .item-card:hover { transform: scale(1.1); z-index: 100; box-shadow: 0 10px 40px rgba(0,0,0,0.9); border-color: var(--primary); }
-        .item-card img { width: 100%; height: 260px; object-fit: cover; border-radius: 8px 8px 0 0; }
+        
+        .item-card img { 
+            width: 100%; 
+            height: 260px; 
+            object-fit: cover; 
+            border-radius: 8px 8px 0 0; 
+            background-color: #111; 
+        }
         
         .hover-details { position: absolute; bottom: 0; left: 0; width: 100%; background: rgba(15, 15, 15, 0.98); padding: 15px 12px; opacity: 0; visibility: hidden; transition: 0.3s; border-top: 1px solid var(--primary); border-radius: 0 0 8px 8px; max-height: 100%; overflow: hidden; }
         .item-card:hover .hover-details { opacity: 1; visibility: visible; }
@@ -99,7 +106,7 @@
         .side-list { padding: 10px; }
         .side-item { display: flex; align-items: center; gap: 10px; padding: 10px; border-bottom: 1px solid #1a1a1a; cursor: pointer; transition: 0.2s; }
         .side-item:hover { background: #181818; }
-        .side-item img { width: 45px; height: 65px; border-radius: 4px; object-fit: cover; }
+        .side-item img { width: 45px; height: 65px; border-radius: 4px; object-fit: cover; background-color: #111; }
         .side-item .txt { font-size: 11px; color: #ccc; }
 
         .no-results { text-align: center; padding: 50px; font-size: 20px; color: #777; width: 100%; }
@@ -112,7 +119,7 @@
 
     <header class="header">
         <a href="index.html" class="logo-ctn">
-            <img src="https://i.ibb.co/5ggRsXdV/Red-Black-Modern-Movie-Cinema-Presentation-20260311-124846.jpg">
+            <img src="https://i.ibb.co/5ggRsXdV/Red-Black-Modern-Movie-Cinema-Presentation-20260311-124846.jpg" alt="Logo">
             <span style="font-weight: bold; font-size: 22px;">WATCH<span style="color: var(--primary);">GO</span></span>
         </a>
         <nav class="main-nav">
@@ -218,37 +225,38 @@
 
         async function createCard(m, type) {
             const isArabic = m.original_language === 'ar';
-            const date = m.release_date  m.first_air_date  '2026';
+            const date = m.release_date || m.first_air_date || '2026';
             const year = date.split('-')[0];
-    
-    // التحقق من وجود poster_path لتجنب ظهور كلمة null في الرابط
-            const posterUrl = m.poster_path 
-                ? https://image.tmdb.org/t/p/w500${m.poster_path} 
-                : 'https://via.placeholder.com/500x750?text=No+Image';
+            
+            const posterUrl = `https://image.tmdb.org/t/p/w500${m.poster_path}`;
 
-    // جلب التفاصيل العربية (مع الحفاظ على كودك)
-            const resAr = await fetch(${BASE_URL}/${type}/${m.id}?api_key=${API_KEY}&language=ar-SA);
-            const arData = await resAr.json();
+            let arData = {};
+            try {
+                const resAr = await fetch(`${BASE_URL}/${type}/${m.id}?api_key=${API_KEY}&language=ar-SA`);
+                arData = await resAr.json();
+            } catch (e) {
+                arData = m;
+            }
 
-            const displayName = isArabic ? (arData.title  arData.name  m.title  m.name) : (m.title  m.name);
+            const displayName = isArabic ? (arData.title || arData.name || m.title || m.name) : (m.title || m.name);
             const displayStory = arData.overview || "لا يوجد وصف عربي حالياً.";
+            const voteAverage = m.vote_average ? m.vote_average.toFixed(1) : '0.0';
 
-            return 
+            return `
                 <div class="item-card" onclick="location.href='movie.html?id=${m.id}&type=${type}'">
-                    <img src="${posterUrl}" alt="${displayName}" onerror="this.src='https://via.placeholder.com/500x750?text=No+Image'">
+                    <img src="${posterUrl}" alt="${displayName}" loading="lazy">
                     <div class="hover-details">
                         <div class="item-name" style="direction: ${isArabic ? 'rtl' : 'ltr'}">${displayName}</div>
                         <p class="item-story">${displayStory}</p>
                         <div class="meta-info">
                             <span>${year}</span>
-                            <span style="color: #f1c40f;"><i class="fa-solid fa-star"></i> ${m.vote_average ? m.vote_average.toFixed(1) : '0.0'}</span>
+                            <span style="color: #f1c40f;"><i class="fa-solid fa-star"></i> ${voteAverage}</span>
                         </div>
                         <div class="watch-btn">مشاهدة الآن</div>
-                   </div>
-               </div>;
+                    </div>
+                </div>`;
         }
 
-        // دالة البحث الذكي
         let searchTimer;
         function smartSearch(query) {
             clearTimeout(searchTimer);
@@ -264,7 +272,6 @@
             document.getElementById('fullGrid').innerHTML = '<div class="no-results">جاري البحث...</div>';
 
             try {
-                // البحث في الأفلام والمسلسلات في نفس الوقت لزيادة الدقة
                 const [movieRes, tvRes] = await Promise.all([
                     fetch(`${BASE_URL}/search/movie?api_key=${API_KEY}&query=${query}&language=ar-SA`),
                     fetch(`${BASE_URL}/search/tv?api_key=${API_KEY}&query=${query}&language=ar-SA`)
@@ -273,11 +280,10 @@
                 const movieData = await movieRes.json();
                 const tvData = await tvRes.json();
 
-                // دمج النتائج وترتيبها حسب الشعبية والوجود الفعلي لصورة البوستر
                 let combinedResults = [
                     ...movieData.results.map(i => ({...i, media_type: 'movie'})),
                     ...tvData.results.map(i => ({...i, media_type: 'tv'}))
-                ].filter(item => item.poster_path) // استبعاد النتائج اللي ملهاش صورة
+                ].filter(item => item.poster_path) // استبعاد أي عنصر بلا بوستر
                  .sort((a, b) => b.popularity - a.popularity);
 
                 if (combinedResults.length === 0) {
@@ -287,7 +293,7 @@
 
                 const cards = await Promise.all(combinedResults.map(m => createCard(m, m.media_type)));
                 document.getElementById('fullGrid').innerHTML = cards.join('');
-                document.getElementById('fullPag').innerHTML = ''; // إخفاء الترقيم في البحث لسرعة العرض
+                document.getElementById('fullPag').innerHTML = '';
 
             } catch (err) {
                 document.getElementById('fullGrid').innerHTML = '<div class="no-results">حدث خطأ أثناء البحث، حاول مرة أخرى.</div>';
@@ -304,7 +310,10 @@
             const res = await fetch(finalUrl);
             const data = await res.json();
             
-            const cards = await Promise.all(data.results.slice(0, 12).map(m => createCard(m, type)));
+            // فلترة النتائج لضمان وجود بوستر حصراً وتصفية الفراغات
+            const validResults = data.results.filter(m => m.poster_path);
+            
+            const cards = await Promise.all(validResults.slice(0, 12).map(m => createCard(m, type)));
             document.getElementById(gridId).innerHTML = cards.join('');
             
             let pagHtml = '';
@@ -322,34 +331,40 @@
 
             const pop = await fetch(`${BASE_URL}/movie/now_playing?api_key=${API_KEY}&language=en-US`);
             const pData = await pop.json();
-            renderSlider(pData.results.slice(0, 5));
+            renderSlider(pData.results.filter(m => m.backdrop_path).slice(0, 5));
 
             const top = await fetch(`${BASE_URL}/movie/top_rated?api_key=${API_KEY}&language=ar-SA`);
             const tData = await top.json();
-            document.getElementById('bestMoviesSide').innerHTML = tData.results.slice(0, 8).map(m => `
+            document.getElementById('bestMoviesSide').innerHTML = tData.results.filter(m => m.poster_path).slice(0, 8).map(m => {
+                return `
                 <div class="side-item" onclick="location.href='movie.html?id=${m.id}&type=movie'">
-                    <img src="https://image.tmdb.org/t/p/w200${m.poster_path}">
+                    <img src="https://image.tmdb.org/t/p/w200${m.poster_path}" alt="${m.title}" loading="lazy">
                     <div class="txt" style="margin-right:10px">${m.title}</div>
-                </div>`).join('');
+                </div>`;
+            }).join('');
 
             const ani = await fetch(`${BASE_URL}/discover/movie?api_key=${API_KEY}&with_genres=16&language=en-US&sort_by=primary_release_date.desc`);
             const aniData = await ani.json();
-            document.getElementById('animeSide').innerHTML = aniData.results.slice(0, 8).map(m => `
+            document.getElementById('animeSide').innerHTML = aniData.results.filter(m => m.poster_path).slice(0, 8).map(m => {
+                return `
                 <div class="side-item" onclick="location.href='movie.html?id=${m.id}&type=movie'">
-                    <img src="https://image.tmdb.org/t/p/w200${m.poster_path}">
+                    <img src="https://image.tmdb.org/t/p/w200${m.poster_path}" alt="${m.title}" loading="lazy">
                     <div class="txt" style="margin-right:10px">${m.title}</div>
-                </div>`).join('');
+                </div>`;
+            }).join('');
         }
 
         function renderSlider(movies) {
             const wrapper = document.getElementById('sliderWrapper');
-            wrapper.innerHTML = movies.map(m => `
+            wrapper.innerHTML = movies.map(m => {
+                return `
                 <div class="slide" style="background-image: url('https://image.tmdb.org/t/p/original${m.backdrop_path}')">
                     <div class="slide-overlay">
                         <h2 class="slide-title">${m.title}</h2>
                         <a href="movie.html?id=${m.id}&type=movie" class="watch-btn" style="width:120px;">شاهد الآن</a>
                     </div>
-                </div>`).join('');
+                </div>`;
+            }).join('');
             let i = 0; setInterval(() => { i = (i + 1) % movies.length; wrapper.style.transform = `translateX(${i * 100}%)`; }, 5000);
         }
 
@@ -373,7 +388,11 @@
             const res = await fetch(url);
             const data = await res.json();
             const type = endpoint.includes('tv') ? 'tv' : 'movie';
-            const cards = await Promise.all(data.results.map(m => createCard(m, type)));
+            
+            // تصفية العناصر التي لا تحتوي على بوستر نهائياً لمنع أي فراغات
+            const validResults = data.results.filter(m => m.poster_path);
+            
+            const cards = await Promise.all(validResults.map(m => createCard(m, type)));
             document.getElementById('fullGrid').innerHTML = cards.join('');
 
             let pagHtml = '';
