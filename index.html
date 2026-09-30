@@ -217,36 +217,36 @@
         }
 
         async function createCard(m, type) {
-    const isArabic = m.original_language === 'ar';
-    const date = m.release_date  m.first_air_date  '2026';
-    const year = date.split('-')[0];
+            const isArabic = m.original_language === 'ar';
+            const date = m.release_date  m.first_air_date  '2026';
+            const year = date.split('-')[0];
     
     // التحقق من وجود poster_path لتجنب ظهور كلمة null في الرابط
-    const posterUrl = m.poster_path 
-        ? https://image.tmdb.org/t/p/w500${m.poster_path} 
-        : 'https://via.placeholder.com/500x750?text=No+Image';
+            const posterUrl = m.poster_path 
+                ? https://image.tmdb.org/t/p/w500${m.poster_path} 
+                : 'https://via.placeholder.com/500x750?text=No+Image';
 
     // جلب التفاصيل العربية (مع الحفاظ على كودك)
-    const resAr = await fetch(${BASE_URL}/${type}/${m.id}?api_key=${API_KEY}&language=ar-SA);
-    const arData = await resAr.json();
+            const resAr = await fetch(${BASE_URL}/${type}/${m.id}?api_key=${API_KEY}&language=ar-SA);
+            const arData = await resAr.json();
 
-    const displayName = isArabic ? (arData.title  arData.name  m.title  m.name) : (m.title  m.name);
-    const displayStory = arData.overview || "لا يوجد وصف عربي حالياً.";
+            const displayName = isArabic ? (arData.title  arData.name  m.title  m.name) : (m.title  m.name);
+            const displayStory = arData.overview || "لا يوجد وصف عربي حالياً.";
 
-    return 
-        <div class="item-card" onclick="location.href='movie.html?id=${m.id}&type=${type}'">
-            <img src="${posterUrl}" alt="${displayName}" onerror="this.src='https://via.placeholder.com/500x750?text=No+Image'">
-            <div class="hover-details">
-                <div class="item-name" style="direction: ${isArabic ? 'rtl' : 'ltr'}">${displayName}</div>
-                <p class="item-story">${displayStory}</p>
-                <div class="meta-info">
-                    <span>${year}</span>
-                    <span style="color: #f1c40f;"><i class="fa-solid fa-star"></i> ${m.vote_average ? m.vote_average.toFixed(1) : '0.0'}</span>
-                </div>
-                <div class="watch-btn">مشاهدة الآن</div>
-            </div>
-        </div>;
-}
+            return 
+                <div class="item-card" onclick="location.href='movie.html?id=${m.id}&type=${type}'">
+                    <img src="${posterUrl}" alt="${displayName}" onerror="this.src='https://via.placeholder.com/500x750?text=No+Image'">
+                    <div class="hover-details">
+                        <div class="item-name" style="direction: ${isArabic ? 'rtl' : 'ltr'}">${displayName}</div>
+                        <p class="item-story">${displayStory}</p>
+                        <div class="meta-info">
+                            <span>${year}</span>
+                            <span style="color: #f1c40f;"><i class="fa-solid fa-star"></i> ${m.vote_average ? m.vote_average.toFixed(1) : '0.0'}</span>
+                        </div>
+                        <div class="watch-btn">مشاهدة الآن</div>
+                   </div>
+               </div>;
+        }
 
         // دالة البحث الذكي
         let searchTimer;
